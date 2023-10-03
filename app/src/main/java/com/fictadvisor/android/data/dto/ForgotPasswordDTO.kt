@@ -1,5 +1,5 @@
 package com.fictadvisor.android.data.dto
 
-data class ForgotPasswordRequest(
+data class ForgotPasswordDTO(
     val email: String,
 )

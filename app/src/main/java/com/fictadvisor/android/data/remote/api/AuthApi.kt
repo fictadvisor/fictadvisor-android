@@ -12,25 +12,25 @@ import retrofit2.http.Query
 interface AuthApi {
 
     @POST("/auth/loginTelegram")
-    suspend fun loginTelegram(@Body telegramDto: Telegram): Response<AuthLoginResponse>
+    suspend fun loginTelegram(@Body telegram: TelegramDTO): Response<AuthLoginResponse>
 
     @POST("/auth/login")
     suspend fun login(): Response<AuthLoginResponse>
 
     @POST("/auth/registerTelegram")
-    suspend fun registerTelegram(@Body registrationTelegramRequest: RegistrationTelegramRequest)
+    suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO)
 
     @POST("/auth/register")
-    suspend fun register(@Body registrationRequest: RegistrationRequest)
+    suspend fun register(@Body registrationRequest: RegistrationDTO)
 
     @POST("/auth/refresh")
     suspend fun refresh(): Response<AuthRefreshResponse>
 
     @POST("/auth/forgotPassword")
-    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordRequest)
+    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO)
 
     @POST("/auth/verifyEmail")
-    suspend fun verifyEmail(@Body verifyEmailRequest: VerifyEmailRequest)
+    suspend fun verifyEmail(@Body verifyEmailRequest: VerificationEmailDTO)
 
     @PUT("/auth/updatePassword")
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>

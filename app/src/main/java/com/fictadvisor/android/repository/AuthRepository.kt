@@ -7,17 +7,17 @@ class AuthRepository() {
     private val authService = RetrofitClient.authApi
 
     suspend fun login(username: String, password: String) = authService.login()
-    suspend fun register(studentInfo: Student, userInfo: User, telegramInfo: Telegram) = authService.register(
-        RegistrationRequest(
+    suspend fun register(studentInfo: StudentDTO, userInfo: UserDTO, telegramInfo: TelegramDTO) = authService.register(
+        RegistrationDTO(
             studentInfo,
             userInfo,
             telegramInfo,
         ),
     )
-    suspend fun loginWithTelegram(telegramInfo: Telegram) = authService.loginTelegram(telegramInfo)
+    suspend fun loginWithTelegram(telegramInfo: TelegramDTO) = authService.loginTelegram(telegramInfo)
 
     suspend fun registerWithTelegram(token: String, telegramId: Long) = authService.registerTelegram(
-        RegistrationTelegramRequest(
+        RegisterTelegramDTO(
             token,
             telegramId,
         ),
@@ -26,13 +26,13 @@ class AuthRepository() {
     suspend fun refresh() = authService.refresh()
 
     suspend fun forgotPassword(email: String) = authService.forgotPassword(
-        ForgotPasswordRequest(
+        ForgotPasswordDTO(
             email,
         ),
     )
 
     suspend fun verifyEmail(email: String) = authService.verifyEmail(
-        VerifyEmailRequest(
+        VerificationEmailDTO(
             email,
         ),
     )

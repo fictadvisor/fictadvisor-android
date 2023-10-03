@@ -2,7 +2,7 @@ package com.fictadvisor.android.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Telegram(
+data class TelegramDTO(
     @SerializedName("auth_date")
     val authDate: Long,
     @SerializedName("first_name")
