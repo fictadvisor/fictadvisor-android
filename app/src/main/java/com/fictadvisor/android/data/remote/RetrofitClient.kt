@@ -16,7 +16,7 @@ private const val timeoutConnect = 30 // In seconds
 
 object RetrofitClient {
 
-    private const val baseUrl = ""
+    private const val baseUrl = "https://apidev.fictadvisor.com/v2/"
 
     val retrofitClient: Retrofit.Builder by lazy {
 

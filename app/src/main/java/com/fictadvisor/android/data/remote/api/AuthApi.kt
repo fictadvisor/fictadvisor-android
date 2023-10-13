@@ -14,8 +14,8 @@ interface AuthApi {
     @POST("/auth/loginTelegram")
     suspend fun loginTelegram(@Body telegram: TelegramDTO): Response<AuthLoginResponse>
 
-    @POST("/auth/login")
-    suspend fun login(): Response<AuthLoginResponse>
+    @POST("/v2/auth/login")
+    suspend fun login(@Body loginRequest: LoginRequest): Response<AuthLoginResponse>
 
     @POST("/auth/registerTelegram")
     suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO)

@@ -6,7 +6,7 @@ import com.fictadvisor.android.data.remote.RetrofitClient
 class AuthRepository() {
     private val authService = RetrofitClient.authApi
 
-    suspend fun login(username: String, password: String) = authService.login()
+    suspend fun login(loginRequest: LoginRequest) = authService.login(loginRequest)
     suspend fun register(studentInfo: StudentDTO, userInfo: UserDTO, telegramInfo: TelegramDTO) = authService.register(
         RegistrationDTO(
             studentInfo,
