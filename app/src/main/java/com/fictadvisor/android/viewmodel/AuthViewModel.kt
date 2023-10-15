@@ -1,28 +1,39 @@
 package com.fictadvisor.android.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.fictadvisor.android.data.dto.AuthLoginResponse
-import com.fictadvisor.android.data.dto.AuthRefreshResponse
-import com.fictadvisor.android.data.dto.BaseResponse
-import com.fictadvisor.android.data.dto.LoginRequest
-import com.fictadvisor.android.data.dto.OrdinaryStudentResponse
-import com.fictadvisor.android.data.dto.StudentDTO
-import com.fictadvisor.android.data.dto.TelegramDTO
-import com.fictadvisor.android.data.dto.UserDTO
+import com.fictadvisor.android.data.dto.*
 import com.fictadvisor.android.repository.AuthRepository
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
 
-class AuthViewModel constructor(private val mainRepository: AuthRepository) : ViewModel() {
+class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     var job: Job? = null
-    var authLoginResponse = MutableLiveData<BaseResponse<AuthLoginResponse>>()
-    var authLoginTelegramResponse = MutableLiveData<BaseResponse<AuthLoginResponse>>()
-    var authUpdatePasswordResponse = MutableLiveData<BaseResponse<AuthLoginResponse>>()
-    var authRefreshResponse = MutableLiveData<BaseResponse<AuthRefreshResponse>>()
-    var authOrdinaryStudentResponse = MutableLiveData<BaseResponse<OrdinaryStudentResponse>>()
-    var authIsRegisterResponse = MutableLiveData<BaseResponse<Boolean>>()
-    var authCheckCaptainResponse = MutableLiveData<BaseResponse<Boolean>>()
+    val mainDispatcher = Dispatchers.Main
+
+    private val authLoginResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authLoginResponse: LiveData<BaseResponse<AuthLoginResponse>> = authLoginResponseMutable
+
+    private val authLoginTelegramResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authLoginTelegramResponse: LiveData<BaseResponse<AuthLoginResponse>> = authLoginTelegramResponseMutable
+
+    private val authUpdatePasswordResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authUpdatePasswordResponse: LiveData<BaseResponse<AuthLoginResponse>> = authUpdatePasswordResponseMutable
+
+    private val authRefreshResponseMutable = MutableLiveData<BaseResponse<AuthRefreshResponse>>()
+    val authRefreshResponse: LiveData<BaseResponse<AuthRefreshResponse>> = authRefreshResponseMutable
+
+    private val authOrdinaryStudentResponseMutable = MutableLiveData<BaseResponse<OrdinaryStudentResponse>>()
+    val authOrdinaryStudentResponse: LiveData<BaseResponse<OrdinaryStudentResponse>> = authOrdinaryStudentResponseMutable
+
+    private val authIsRegisterResponseMutable = MutableLiveData<BaseResponse<Boolean>>()
+    val authIsRegisterResponse: LiveData<BaseResponse<Boolean>> = authIsRegisterResponseMutable
+
+    private val authCheckCaptainResponseMutable = MutableLiveData<BaseResponse<Boolean>>()
+    val authCheckCaptainResponse: LiveData<BaseResponse<Boolean>> = authCheckCaptainResponseMutable
 
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("AuthViewModel", "Exception handled: ${throwable.localizedMessage}")
@@ -30,15 +41,19 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
 
     fun login(username: String, password: String) {
         val loginRequest = LoginRequest(username, password)
-        authLoginResponse.postValue(BaseResponse.Loading())
+        authLoginResponseMutable.postValue(BaseResponse.Loading())
 
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.login(loginRequest)
-            withContext(Dispatchers.Main) {
+            withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authLoginResponse.postValue(BaseResponse.Success(response.body()))
+                    authLoginResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authLoginResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+
+                    authLoginResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -47,11 +62,14 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
     fun loginTelegram(telegramInfo: TelegramDTO) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.loginWithTelegram(telegramInfo)
-            withContext(Dispatchers.Main) {
+            withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authLoginTelegramResponse.postValue(BaseResponse.Success(response.body()))
+                    authLoginTelegramResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authLoginTelegramResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authLoginTelegramResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -60,11 +78,14 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
     fun updatePassword(oldPassword: String, newPassword: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.updatePassword(oldPassword, newPassword)
-            withContext(Dispatchers.Main) {
+            withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authUpdatePasswordResponse.postValue(BaseResponse.Success(response.body()))
+                    authUpdatePasswordResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authUpdatePasswordResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authUpdatePasswordResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -73,11 +94,14 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
     fun refresh() {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.refresh()
-            withContext(Dispatchers.Main) {
+            withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authRefreshResponse.postValue(BaseResponse.Success(response.body()))
+                    authRefreshResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authRefreshResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authRefreshResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -112,9 +136,12 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
             val response = mainRepository.getStudent()
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    authOrdinaryStudentResponse.postValue(BaseResponse.Success(response.body()))
+                    authOrdinaryStudentResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authOrdinaryStudentResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authOrdinaryStudentResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -125,9 +152,12 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
             val response = mainRepository.verifyIsRegistered(username, email)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    authIsRegisterResponse.postValue(BaseResponse.Success(response.body()))
+                    authIsRegisterResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authIsRegisterResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authIsRegisterResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -138,9 +168,12 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
             val response = mainRepository.checkCaptain(groupId)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
-                    authCheckCaptainResponse.postValue(BaseResponse.Success(response.body()))
+                    authCheckCaptainResponseMutable.postValue(BaseResponse.Success(response.body()))
                 } else {
-                    authCheckCaptainResponse.postValue(BaseResponse.Error(response.message()))
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authCheckCaptainResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
@@ -150,5 +183,4 @@ class AuthViewModel constructor(private val mainRepository: AuthRepository) : Vi
         super.onCleared()
         job?.cancel()
     }
-
 }
