@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.fictadvisor.android.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.fictadvisor.android.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" />
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.fictadvisor.android.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" >
+        <action
+            android:id="@+id/action_registrationFragment_to_continueRegistrationFragment"
+            app:destination="@id/continueRegistrationFragment">
+            <argument
+                android:name="username"
+                app:argType="string" />
+            <argument
+                android:name="name"
+                app:argType="string" />
+            <argument
+                android:name="lastname"
+                app:argType="string" />
+            <argument
+                android:name="middleName"
+                app:argType="string" />
+            <argument
+                android:name="group"
+                app:argType="string" />
+        </action>
+
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/continueRegistrationFragment"
+        android:name="com.fictadvisor.android.ContinueRegistrationFragment"
+        android:label="fragment_continue_registration"
+        tools:layout="@layout/fragment_continue_registration" >
+    <action
+        android:id="@+id/action_continueRegistrationFragment_to_registrationFragment"
+        app:destination="@id/registrationFragment" />
+    </fragment>
+
+</navigation>
