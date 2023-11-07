@@ -32,7 +32,7 @@ class AuthApiTest {
             val original = chain.request()
 
             val request = original.newBuilder()
-                .header(contentType, contentTypeValue)
+                .header(CONTENT_TYPE, CONTENT_TYPE_VALUE)
                 .method(original.method, original.body)
                 .build()
 
@@ -46,8 +46,8 @@ class AuthApiTest {
         okhttpClient
             .addInterceptor(loggingInterceptor)
             .addInterceptor(headerInterceptor)
-            .connectTimeout(timeoutConnect.toLong(), TimeUnit.SECONDS)
-            .readTimeout(timeoutRead.toLong(), TimeUnit.SECONDS)
+            .connectTimeout(TIMEOUT_CONNECT.toLong(), TimeUnit.SECONDS)
+            .readTimeout(TIMEOUT_READ.toLong(), TimeUnit.SECONDS)
 
         val retrofit = Retrofit.Builder()
             .baseUrl(server.url("/"))
@@ -65,7 +65,8 @@ class AuthApiTest {
 
     @Test
     fun testLogin() = runBlocking {
-        val responseJson = """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
+        val responseJson =
+            """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
         server.enqueue(MockResponse().setBody(responseJson))
 
         val loginRequest = LoginRequest(username = "some_username", password = "some_password")
@@ -81,9 +82,9 @@ class AuthApiTest {
 
     companion object {
         const val MOCK_WEBSERVER_PORT = 8080
-        private const val timeoutRead = 30 // In seconds
-        private const val contentType = "Content-Type"
-        private const val contentTypeValue = "application/json"
-        private const val timeoutConnect = 30 // In seconds
+        private const val TIMEOUT_READ = 30 // In seconds
+        private const val CONTENT_TYPE = "Content-Type"
+        private const val CONTENT_TYPE_VALUE = "application/json"
+        private const val TIMEOUT_CONNECT = 30 // In seconds
     }
 }
