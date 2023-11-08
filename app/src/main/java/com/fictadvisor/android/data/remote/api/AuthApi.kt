@@ -1,6 +1,7 @@
 package com.fictadvisor.android.data.remote.api
 
 import com.fictadvisor.android.data.dto.*
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -19,19 +20,19 @@ interface AuthApi {
     suspend fun login(@Body loginRequest: LoginRequest): Response<AuthLoginResponse>
 
     @POST("/auth/registerTelegram")
-    suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO)
+    suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO): Response<ResponseBody>
 
     @POST("/auth/register")
-    suspend fun register(@Body registrationRequest: RegistrationDTO)
+    suspend fun register(@Body registrationRequest: RegistrationDTO): Response<ResponseBody>
 
     @POST("/auth/refresh")
     suspend fun refresh(): Response<AuthRefreshResponse>
 
     @POST("/auth/forgotPassword")
-    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO)
+    suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO): Response<ResponseBody>
 
     @POST("/auth/verifyEmail")
-    suspend fun verifyEmail(@Body verifyEmailRequest: VerificationEmailDTO)
+    suspend fun verifyEmail(@Body verifyEmailRequest: VerificationEmailDTO): Response<ResponseBody>
 
     @PUT("/auth/updatePassword")
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>
