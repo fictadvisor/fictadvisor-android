@@ -9,7 +9,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
-import java.lang.Error
 
 interface AuthApi {
 
@@ -23,7 +22,7 @@ interface AuthApi {
     suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO): Response<ResponseBody>
 
     @POST("/auth/register")
-    suspend fun register(@Body registrationRequest: RegistrationDTO): Response<ResponseBody>
+    suspend fun register(@Body registrationRequest: RegistrationDTO): Response<AuthLoginResponse>
 
     @POST("/auth/refresh")
     suspend fun refresh(): Response<AuthRefreshResponse>
@@ -31,8 +30,11 @@ interface AuthApi {
     @POST("/auth/forgotPassword")
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO): Response<ResponseBody>
 
-    @POST("/auth/verifyEmail")
+    @POST("/auth/register/verifyEmail")
     suspend fun verifyEmail(@Body verifyEmailRequest: VerificationEmailDTO): Response<ResponseBody>
+
+    @POST("/auth/register/verifyEmail/{token}")
+    suspend fun verifyEmailToken(@Path("token") token: String): Response<AuthLoginResponse>
 
     @PUT("/auth/updatePassword")
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>

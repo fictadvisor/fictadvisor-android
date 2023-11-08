@@ -37,6 +37,8 @@ class AuthRepository() {
         ),
     )
 
+    suspend fun verifyEmailToken(token: String) = authService.verifyEmailToken(token)
+
     suspend fun updatePassword(oldPassword: String, newPassword: String) = authService.updatePassword(
         UpdatePasswordDTO(
             oldPassword,
@@ -52,5 +54,5 @@ class AuthRepository() {
 
     suspend fun checkResetToken(token: String) = authService.checkResetToken(token)
 
-
+    suspend fun checkRegisterTelegram(token: String) = authService.checkRegisterTelegram(token)
 }

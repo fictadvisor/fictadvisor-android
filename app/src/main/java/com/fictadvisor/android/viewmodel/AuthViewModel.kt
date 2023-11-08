@@ -9,6 +9,7 @@ import com.fictadvisor.android.repository.AuthRepository
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.*
+import okhttp3.ResponseBody
 
 class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     var job: Job? = null
@@ -35,6 +36,27 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     private val authCheckCaptainResponseMutable = MutableLiveData<BaseResponse<Boolean>>()
     val authCheckCaptainResponse: LiveData<BaseResponse<Boolean>> = authCheckCaptainResponseMutable
 
+    private val authVerifyEmailResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
+    val authVerifyEmailResponse: LiveData<BaseResponse<ResponseBody>> = authVerifyEmailResponseMutable
+
+    private val authRegisterResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authRegisterResponse: LiveData<BaseResponse<AuthLoginResponse>> = authRegisterResponseMutable
+
+    private val authRegisterTelegramResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
+    val authRegisterTelegramResponse: LiveData<BaseResponse<ResponseBody>> = authRegisterTelegramResponseMutable
+
+    private val authForgotPasswordResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
+    val authForgotPasswordResponse: LiveData<BaseResponse<ResponseBody>> = authForgotPasswordResponseMutable
+
+    private val authVerifyEmailTokenResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authVerifyEmailTokenResponse: LiveData<BaseResponse<AuthLoginResponse>> = authVerifyEmailTokenResponseMutable
+
+    private val authCheckResetTokenResponseMutable = MutableLiveData<BaseResponse<CheckResetTokenResponse>>()
+    val authCheckResetTokenResponse: LiveData<BaseResponse<CheckResetTokenResponse>> = authCheckResetTokenResponseMutable
+
+    private val authCheckRegisterTelegramResponseMutable = MutableLiveData<BaseResponse<CheckRegisterTelegramResponse>>()
+    val authCheckRegisterTelegramResponse: LiveData<BaseResponse<CheckRegisterTelegramResponse>> = authCheckRegisterTelegramResponseMutable
+
     val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
         Log.e("AuthViewModel", "Exception handled: ${throwable.localizedMessage}")
     }
@@ -42,7 +64,6 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     fun login(username: String, password: String) {
         val loginRequest = LoginRequest(username, password)
         authLoginResponseMutable.postValue(BaseResponse.Loading())
-
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
             val response = mainRepository.login(loginRequest)
             withContext(mainDispatcher) {
@@ -109,25 +130,85 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
 
     fun register(studentInfo: StudentDTO, userInfo: UserDTO, telegramInfo: TelegramDTO) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            mainRepository.register(studentInfo, userInfo, telegramInfo)
+            val response = mainRepository.register(studentInfo, userInfo, telegramInfo)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authRegisterResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+
+                    authRegisterResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
         }
     }
 
     fun registerWithTelegram(token: String, telegramId: Long) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            mainRepository.registerWithTelegram(token, telegramId)
+            val response = mainRepository.registerWithTelegram(token, telegramId)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authRegisterTelegramResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+
+                    authRegisterTelegramResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
         }
     }
 
     fun forgotPassword(email: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            mainRepository.forgotPassword(email)
+            val response = mainRepository.forgotPassword(email)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authForgotPasswordResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+
+                    authForgotPasswordResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
         }
     }
 
     fun verifyEmail(email: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            mainRepository.verifyEmail(email)
+            val response = mainRepository.verifyEmail(email)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authVerifyEmailResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authVerifyEmailResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
+        }
+    }
+
+    fun verifyEmailToken(token: String) {
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.verifyEmailToken(token)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authVerifyEmailTokenResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authVerifyEmailTokenResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
         }
     }
 
@@ -174,6 +255,40 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
                     val type = object : TypeToken<ErrorResponse>() {}.type
                     val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
                     authCheckCaptainResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
+        }
+    }
+
+    fun checkResetToken(token: String) {
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.checkResetToken(token)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    authCheckResetTokenResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authCheckResetTokenResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
+        }
+    }
+
+    fun checkRegisterTelegram(token: String) {
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.checkRegisterTelegram(token)
+            withContext(Dispatchers.Main) {
+                if (response.isSuccessful) {
+                    authCheckRegisterTelegramResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? =
+                        gson.fromJson(response.errorBody()!!.charStream(), type)
+                    authCheckRegisterTelegramResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }
