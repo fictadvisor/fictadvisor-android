@@ -25,18 +25,18 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Пошта"
-        android:inputType="text"
+        android:inputType="textEmailAddress"
         app:layout_constraintStart_toStartOf="@+id/checkBox_captain"
         app:layout_constraintTop_toBottomOf="@+id/checkBox_captain" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/editTextPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Пароль"
-        android:inputType="text"
+        android:inputType="textPassword"
         app:layout_constraintStart_toStartOf="@+id/editTextText_email"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_email" />
 
@@ -47,9 +47,9 @@
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Підтвердження пароля"
-        android:inputType="text"
-        app:layout_constraintStart_toStartOf="@+id/editTextText2"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText2" />
+        android:inputType="textPassword"
+        app:layout_constraintStart_toStartOf="@+id/editTextPassword"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
     <CheckBox
         android:id="@+id/checkBox"
