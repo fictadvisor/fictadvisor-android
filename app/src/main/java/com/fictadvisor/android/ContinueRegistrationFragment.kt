@@ -31,7 +31,7 @@ class ContinueRegistrationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentContinueRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -57,11 +57,24 @@ class ContinueRegistrationFragment : Fragment() {
             val middleName = arguments.getString("middleName")
             val group = arguments.getString("group")
 
-            if (username != null && name != null && lastname != null && middleName != null && group != null) {
-                val email = binding.editTextTextEmail.text.toString()
+            if (username != null && name != null && lastname != null && middleName != null && group != null ) {
 
-                binding.buttonRegister.setOnClickListener {
-                    validateAndRegisterUser(username, email, name, lastname, middleName, group)
+                        binding.buttonRegister.setOnClickListener {
+                            val email = binding.editTextTextEmail.text.toString()
+                            val password = binding.editTextPassword.text.toString()
+                            val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
+                            if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
+                                validateAndRegisterUser(
+                                    username,
+                                    email,
+                                    name,
+                                    lastname,
+                                    middleName,
+                                    group,
+                                    password,
+                                    passwordConfirm
+                                )
+                            }
                 }
             }
         }
@@ -73,10 +86,10 @@ class ContinueRegistrationFragment : Fragment() {
         name: String,
         lastname: String,
         middleName: String,
-        group: String
+        group: String,
+        password: String,
+        passwordConfirm: String
     ) {
-        val password = binding.editTextPassword.text.toString()
-        val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
 
         if (password != passwordConfirm) {
             showErrorMessage("Паролі не співпадають")
@@ -132,8 +145,6 @@ class ContinueRegistrationFragment : Fragment() {
             is BaseResponse.Loading -> {
                 // Loading, if needed
             }
-
-            else -> {}
         }
     }
 
@@ -150,8 +161,6 @@ class ContinueRegistrationFragment : Fragment() {
             is BaseResponse.Loading -> {
                 // Loading, if needed
             }
-
-            else -> {}
         }
     }
 
@@ -206,8 +215,6 @@ class ContinueRegistrationFragment : Fragment() {
             is BaseResponse.Loading -> {
                 // Loading, if needed
             }
-
-            else -> {}
         }
     }
 
