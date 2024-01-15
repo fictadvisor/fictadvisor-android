@@ -59,22 +59,22 @@ class ContinueRegistrationFragment : Fragment() {
 
             if (username != null && name != null && lastname != null && middleName != null && group != null ) {
 
-                        binding.buttonRegister.setOnClickListener {
-                            val email = binding.editTextTextEmail.text.toString()
-                            val password = binding.editTextPassword.text.toString()
-                            val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
-                            if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
-                                validateAndRegisterUser(
-                                    username,
-                                    email,
-                                    name,
-                                    lastname,
-                                    middleName,
-                                    group,
-                                    password,
-                                    passwordConfirm
-                                )
-                            }
+                binding.buttonRegister.setOnClickListener {
+                    val email = binding.editTextTextEmail.text.toString()
+                    val password = binding.editTextPassword.text.toString()
+                    val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
+                    if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
+                        validateAndRegisterUser(
+                            username,
+                            email,
+                            name,
+                            lastname,
+                            middleName,
+                            group,
+                            password,
+                            passwordConfirm
+                        )
+                    }
                 }
             }
         }
