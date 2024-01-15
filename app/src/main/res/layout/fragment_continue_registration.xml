@@ -26,6 +26,8 @@
         android:ems="10"
         android:hint="Пошта"
         android:inputType="textEmailAddress"
+        android:maxLength="40"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="@+id/checkBox_captain"
         app:layout_constraintTop_toBottomOf="@+id/checkBox_captain" />
 
@@ -37,6 +39,8 @@
         android:ems="10"
         android:hint="Пароль"
         android:inputType="textPassword"
+        android:maxLength="40"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="@+id/editTextText_email"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_email" />
 
@@ -48,6 +52,8 @@
         android:ems="10"
         android:hint="Підтвердження пароля"
         android:inputType="textPassword"
+        android:maxLength="40"
+        android:maxLines="1"
         app:layout_constraintStart_toStartOf="@+id/editTextPassword"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 

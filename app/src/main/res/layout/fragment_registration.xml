@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="113dp"
         android:layout_marginTop="24dp"
+        android:maxLines="1"
         android:text="Приєднати Telegram"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
@@ -36,6 +37,8 @@
         android:ems="10"
         android:hint="Юзернейм"
         android:inputType="text"
+        android:maxLength="40"
+        android:maxLines="1"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button_addTelefram" />
@@ -48,6 +51,8 @@
         android:ems="10"
         android:hint="Прізвище"
         android:inputType="text"
+        android:maxLength="40"
+        android:maxLines="1"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/editTextText_username"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_username" />
@@ -60,6 +65,8 @@
         android:ems="10"
         android:hint="Ім'я"
         android:inputType="text"
+        android:maxLength="40"
+        android:maxLines="1"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/editTextText_lastname"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_lastname" />
@@ -72,6 +79,8 @@
         android:ems="10"
         android:hint="По батькові"
         android:inputType="text"
+        android:maxLength="40"
+        android:maxLines="1"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/editTextText_name"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_name" />

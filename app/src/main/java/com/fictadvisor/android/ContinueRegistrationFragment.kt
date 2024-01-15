@@ -16,6 +16,7 @@ import com.fictadvisor.android.data.dto.TelegramDTO
 import com.fictadvisor.android.data.dto.UserDTO
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
+import com.fictadvisor.android.validator.InputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -40,89 +41,113 @@ class ContinueRegistrationFragment : Fragment() {
             AuthViewModelFactory(authRepository)
         ).get(AuthViewModel::class.java)
 
-        setupUI()
+        setBackButtonListener()
+        setRegisterButtonListener()
         return view
     }
 
-    private fun setupUI() {
+    private fun setBackButtonListener() {
         binding.buttonBack.setOnClickListener {
             view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
         }
+    }
 
-        val arguments = arguments
-        if (arguments != null) {
-            val username = arguments.getString("username")
-            val name = arguments.getString("name")
-            val lastname = arguments.getString("lastname")
-            val middleName = arguments.getString("middleName")
-            val group = arguments.getString("group")
+    private fun setRegisterButtonListener() {
+        binding.buttonRegister.setOnClickListener {
+            val studentData = getStudentData()
+            val userData = getUserData()
+            val telegramData = getTelegramData()
 
-            if (username != null && name != null && lastname != null && middleName != null && group != null ) {
+            if (userData.isEmpty() || studentData.isEmpty()) {
+                showErrorMessage("Будь ласка, введіть правильні дані")
+                return@setOnClickListener
+            }
 
-                binding.buttonRegister.setOnClickListener {
-                    val email = binding.editTextTextEmail.text.toString()
-                    val password = binding.editTextPassword.text.toString()
-                    val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
-                    if (email.isNotEmpty() && password.isNotEmpty() && passwordConfirm.isNotEmpty()) {
-                        validateAndRegisterUser(
-                            username,
-                            email,
-                            name,
-                            lastname,
-                            middleName,
-                            group,
-                            password,
-                            passwordConfirm
-                        )
-                    }
+            CoroutineScope(Dispatchers.IO).launch {
+                authViewModel.verifyIsRegistered(userData.username, userData.email)
+            }
+
+            authViewModel.authIsRegisterResponse.observe(viewLifecycleOwner) { response ->
+                response?.let {
+
+                    handleIsRegisteredResponse(it, studentData, userData, telegramData)
                 }
             }
         }
     }
 
-    private fun validateAndRegisterUser(
-        username: String,
-        email: String,
-        name: String,
-        lastname: String,
-        middleName: String,
-        group: String,
-        password: String,
-        passwordConfirm: String
-    ) {
+    private fun getTelegramData (): TelegramDTO {
+        //TODO:get telegram data from server
+        return TelegramDTO(0, "", "", "", "", 0, "")
+    }
 
-        if (password != passwordConfirm) {
-            showErrorMessage("Паролі не співпадають")
-            return
-        }
+    private fun getStudentData(): StudentDTO {
+        val arguments = arguments
+        if (arguments != null) {
+            val group = arguments.getString("group")
+            val name = arguments.getString("name")
+            val middleName = arguments.getString("middleName")
+            val lastname = arguments.getString("lastname")
+            val isCaptain = binding.checkBoxCaptain.isChecked
 
-        CoroutineScope(Dispatchers.IO).launch {
-            authViewModel.verifyIsRegistered(username, email)
-        }
-
-        authViewModel.authIsRegisterResponse.observe(viewLifecycleOwner) { response ->
-            response?.let {
-
-                handleIsRegisteredResponse(it, username, email, name, lastname, middleName, group, password)
+            if (name != null && lastname != null && middleName != null && group != null) {
+                return StudentDTO(
+                    groupId = "0", //TODO: get group id from server
+                    firstName = name,
+                    middleName = middleName,
+                    lastName = lastname,
+                    isCaptain = isCaptain
+                )
             }
         }
+        return StudentDTO("", "", "", "", false)
+    }
+
+    private fun getUserData(): UserDTO {
+        val email = binding.editTextTextEmail.text.toString()
+        val password = binding.editTextPassword.text.toString()
+        val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
+        if(!isInputValid(email, password, passwordConfirm)){
+            return UserDTO("", "", "")
+        }
+        val arguments = arguments
+        if (arguments != null) {
+            val username = arguments.getString("username")
+            if (username != null) {
+                return UserDTO(username = username, email = email, password = password)
+            }
+        }
+        return UserDTO("", "", "")
+    }
+
+    private fun isInputValid(email: String, password: String, passwordConfirm: String): Boolean {
+        val emailValidationResult = InputValidator.isEmailValid(email)
+        val passwordValidationResult = InputValidator.isPasswordValid(password)
+
+        if (!emailValidationResult.isValid) {
+            showErrorMessage(emailValidationResult.errorMessage)
+            return false
+        }
+        if (!passwordValidationResult.isValid) {
+            showErrorMessage(passwordValidationResult.errorMessage)
+            return false
+        }
+        if(password != passwordConfirm) {
+            showErrorMessage("Паролі не співпадають")
+            return false
+        }
+        return true
     }
 
     private fun handleIsRegisteredResponse(
-        response: BaseResponse<Boolean>,
-        username: String,
-        email: String,
-        name: String,
-        lastname: String,
-        middleName: String,
-        group: String,
-        password: String
+        response: BaseResponse<Boolean>, studentData: StudentDTO, userData: UserDTO, telegramData: TelegramDTO
     ) {
         when (response) {
             is BaseResponse.Success -> {
                 if (response.data == true) {
-                    if (binding.checkBoxCaptain.isChecked) {
+                    if (studentData.isCaptain) {
                         CoroutineScope(Dispatchers.IO).launch {
+                            val group = studentData.groupId
                             authViewModel.checkCaptain(group)
                         }
                         authViewModel.authCheckCaptainResponse.observe(viewLifecycleOwner) { captainResponse ->
@@ -131,10 +156,10 @@ class ContinueRegistrationFragment : Fragment() {
                             }
                         }
                     } else {
-                        registerUser(username, email, name, lastname, middleName, group, password)
+                        registerUser(studentData, userData, telegramData)
                     }
                 } else {
-                    registerUser(username, email, name, lastname, middleName, group, password)
+                    registerUser(studentData, userData, telegramData)
                 }
             }
 
@@ -165,34 +190,11 @@ class ContinueRegistrationFragment : Fragment() {
     }
 
     private fun registerUser(
-        username: String,
-        email: String,
-        name: String,
-        lastname: String,
-        middleName: String,
-        group: String,
-        password: String
+        studentData: StudentDTO, userData: UserDTO, telegramData: TelegramDTO
     ) {
-        val studentInfo = StudentDTO(
-            groupId = group,
-            firstName = name,
-            middleName = middleName,
-            lastName = lastname,
-            isCaptain = binding.checkBoxCaptain.isChecked
-        )
-        val userInfo = UserDTO(username = username, email = email, password = password)
-        val telegramInfo = TelegramDTO(
-            authDate = 0,
-            firstName = name,
-            lastName = lastname,
-            photoUrl = "",
-            hash = "",
-            id = 0,
-            username = ""
-        )
 
         CoroutineScope(Dispatchers.IO).launch {
-            authViewModel.register(studentInfo, userInfo, telegramInfo)
+            authViewModel.register(studentData, userData, telegramData)
         }
 
         authViewModel.authRegisterResponse.observe(viewLifecycleOwner) { registerResponse ->
