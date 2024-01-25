@@ -78,7 +78,7 @@ class ContinueRegistrationFragment : Fragment() {
 
     private fun getTelegramData (): TelegramDTO {
         //TODO:get telegram data from server
-        return TelegramDTO(0, "", "", "", "", 0, "")
+        return TelegramDTO(0, "", "", "", "", 0)
     }
 
     private fun getStudentData(): StudentDTO {

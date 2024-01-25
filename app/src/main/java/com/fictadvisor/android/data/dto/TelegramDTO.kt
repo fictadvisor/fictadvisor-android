@@ -13,6 +13,6 @@ data class TelegramDTO(
     val photoUrl: String,
     val hash: String,
     val id: Long,
-    val username: String
+   // val username: String //deleted
 
 )

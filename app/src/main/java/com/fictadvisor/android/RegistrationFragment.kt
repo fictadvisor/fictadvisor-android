@@ -1,5 +1,6 @@
 package com.fictadvisor.android
 
+import com.fictadvisor.android.services.TelegramService
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -31,6 +32,9 @@ class RegistrationFragment : Fragment() {
         }
 
 
+        binding.buttonAddTelefram.setOnClickListener {
+            TelegramService(requireContext()).openTelegramBot()
+        }
         return view
     }
 
