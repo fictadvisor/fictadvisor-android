@@ -12,10 +12,9 @@
         android:id="@+id/checkBox_captain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
-        android:layout_marginTop="176dp"
+        android:layout_marginTop="165dp"
         android:text="Я староста"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/editTextText_email"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
@@ -28,7 +27,8 @@
         android:inputType="textEmailAddress"
         android:maxLength="40"
         android:maxLines="1"
-        app:layout_constraintStart_toStartOf="@+id/checkBox_captain"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox_captain" />
 
     <EditText
@@ -61,9 +61,9 @@
         android:id="@+id/checkBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="28dp"
-        android:text="Я погоджуюсь на обробку персональних даних"
+        android:text="Я погоджуюсь на обробку\nперсональних даних"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_confirmPass" />
 
@@ -71,9 +71,9 @@
         android:id="@+id/button_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="124dp"
         android:layout_marginTop="24dp"
         android:text="Зареєструватись"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox" />
 
