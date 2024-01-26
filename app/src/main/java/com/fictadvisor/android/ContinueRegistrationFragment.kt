@@ -92,7 +92,7 @@ class ContinueRegistrationFragment : Fragment() {
 
             if (name != null && lastname != null && middleName != null && group != null) {
                 return StudentDTO(
-                    groupId = "0", //TODO: get group id from server
+                    groupId = group,
                     firstName = name,
                     middleName = middleName,
                     lastName = lastname,
