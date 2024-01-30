@@ -210,6 +210,8 @@ class ContinueRegistrationFragment : Fragment() {
         when (registerResponse) {
             is BaseResponse.Success -> {
                 showSuccessMessage("Реєстрація успішна")
+                val action = ContinueRegistrationFragmentDirections.actionContinueRegistrationFragmentToVerifyEmailFragment()
+                Navigation.findNavController(requireView()).navigate(action)
             }
 
             is BaseResponse.Error -> {

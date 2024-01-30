@@ -21,6 +21,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <nav-graph android:value="@navigation/my_nav" />
         </activity>
     </application>
 
