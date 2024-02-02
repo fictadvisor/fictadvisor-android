@@ -39,8 +39,8 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     private val authVerifyEmailResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
     val authVerifyEmailResponse: LiveData<BaseResponse<ResponseBody>> = authVerifyEmailResponseMutable
 
-    private val authRegisterResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
-    val authRegisterResponse: LiveData<BaseResponse<AuthLoginResponse>> = authRegisterResponseMutable
+    private val authRegisterResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
+    val authRegisterResponse: LiveData<BaseResponse<ResponseBody>> = authRegisterResponseMutable
 
     private val authRegisterTelegramResponseMutable = MutableLiveData<BaseResponse<ResponseBody>>()
     val authRegisterTelegramResponse: LiveData<BaseResponse<ResponseBody>> = authRegisterTelegramResponseMutable
@@ -133,7 +133,7 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
             val response = mainRepository.register(registrationDTO)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authRegisterResponseMutable.postValue(BaseResponse.Success(response.body()))
+                    authRegisterResponseMutable.postValue(BaseResponse.Success(response.body() as ResponseBody))
                 } else {
                     val gson = Gson()
                     val type = object : TypeToken<ErrorResponse>() {}.type
@@ -150,7 +150,7 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
             val response = mainRepository.registerWithTelegram(token, telegramId)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
-                    authRegisterTelegramResponseMutable.postValue(BaseResponse.Success(response.body()))
+                    authRegisterTelegramResponseMutable.postValue(BaseResponse.Success(response.body() as ResponseBody))
                 } else {
                     val gson = Gson()
                     val type = object : TypeToken<ErrorResponse>() {}.type
