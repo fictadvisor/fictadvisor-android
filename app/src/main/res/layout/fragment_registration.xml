@@ -11,20 +11,20 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
         android:layout_marginTop="120dp"
         android:text="Створи акаунт"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_addTelefram"
+        android:id="@+id/button_addTelegram"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="113dp"
         android:layout_marginTop="24dp"
         android:maxLines="1"
         android:text="Приєднати Telegram"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -32,7 +32,6 @@
         android:id="@+id/editTextText_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="99dp"
         android:layout_marginTop="24dp"
         android:ems="10"
         android:hint="Юзернейм"
@@ -40,8 +39,9 @@
         android:maxLength="40"
         android:maxLines="1"
         android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_addTelefram" />
+        app:layout_constraintTop_toBottomOf="@+id/button_addTelegram" />
 
     <EditText
         android:id="@+id/editTextText_lastname"
@@ -85,15 +85,17 @@
         app:layout_constraintStart_toStartOf="@+id/editTextText_name"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_name" />
 
-    <Spinner
-        android:id="@+id/spinner"
+    <AutoCompleteTextView
+        android:id="@+id/groupACTV"
         android:layout_width="212dp"
         android:layout_height="45dp"
         android:layout_marginTop="24dp"
         android:ems="10"
+        android:hint="Група"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/editTextText_fathername"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername"
+        android:completionThreshold="1" />
 
     <Button
         android:id="@+id/button_next"

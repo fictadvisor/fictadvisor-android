@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.fictadvisor.android.data.dto.AuthLoginResponse
 import com.fictadvisor.android.data.dto.BaseResponse
+import com.fictadvisor.android.data.dto.RegistrationDTO
 import com.fictadvisor.android.data.dto.StudentDTO
 import com.fictadvisor.android.data.dto.TelegramDTO
 import com.fictadvisor.android.data.dto.UserDTO
@@ -92,7 +93,7 @@ class ContinueRegistrationFragment : Fragment() {
 
             if (name != null && lastname != null && middleName != null && group != null) {
                 return StudentDTO(
-                    groupId = "0", //TODO: get group id from server
+                    groupId = group,
                     firstName = name,
                     middleName = middleName,
                     lastName = lastname,
@@ -194,7 +195,8 @@ class ContinueRegistrationFragment : Fragment() {
     ) {
 
         CoroutineScope(Dispatchers.IO).launch {
-            authViewModel.register(studentData, userData, telegramData)
+            val registrationDTO = RegistrationDTO(studentData, userData, ) //TODO: add telegram data
+            authViewModel.register(registrationDTO)
         }
 
         authViewModel.authRegisterResponse.observe(viewLifecycleOwner) { registerResponse ->

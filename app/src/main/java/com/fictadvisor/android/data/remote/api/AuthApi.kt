@@ -12,31 +12,31 @@ import retrofit2.http.Query
 
 interface AuthApi {
 
-    @POST("/auth/loginTelegram")
+    @POST("/v2/auth/loginTelegram")
     suspend fun loginTelegram(@Body telegram: TelegramDTO): Response<AuthLoginResponse>
 
     @POST("/v2/auth/login")
     suspend fun login(@Body loginRequest: LoginRequest): Response<AuthLoginResponse>
 
-    @POST("/auth/registerTelegram")
+    @POST("/v2/auth/registerTelegram")
     suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO): Response<ResponseBody>
 
-    @POST("/auth/register")
+    @POST("/v2/auth/register")
     suspend fun register(@Body registrationRequest: RegistrationDTO): Response<AuthLoginResponse>
 
-    @POST("/auth/refresh")
+    @POST("/v2/auth/refresh")
     suspend fun refresh(): Response<AuthRefreshResponse>
 
-    @POST("/auth/forgotPassword")
+    @POST("/v2/auth/forgotPassword")
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO): Response<ResponseBody>
 
-    @POST("/auth/register/verifyEmail")
+    @POST("/v2/auth/register/verifyEmail")
     suspend fun verifyEmail(@Body verifyEmailRequest: VerificationEmailDTO): Response<ResponseBody>
 
-    @POST("/auth/register/verifyEmail/{token}")
+    @POST("/v2/auth/register/verifyEmail/{token}")
     suspend fun verifyEmailToken(@Path("token") token: String): Response<AuthLoginResponse>
 
-    @PUT("/auth/updatePassword")
+    @PUT("/v2/auth/updatePassword")
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>
 
     @GET("/v2/auth/me")

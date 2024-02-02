@@ -128,9 +128,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun register(studentInfo: StudentDTO, userInfo: UserDTO, telegramInfo: TelegramDTO) {
+    fun register(registrationDTO: RegistrationDTO) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.register(studentInfo, userInfo, telegramInfo)
+            val response = mainRepository.register(registrationDTO)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     authRegisterResponseMutable.postValue(BaseResponse.Success(response.body()))
