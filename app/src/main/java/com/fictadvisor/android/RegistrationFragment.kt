@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import androidx.navigation.fragment.navArgs
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.GroupDTO
 import com.fictadvisor.android.databinding.FragmentRegistrationBinding
@@ -30,6 +31,8 @@ class RegistrationFragment : Fragment() {
     private val groupsMap: MutableMap<String, String> = HashMap()
     private val groupCodesList: MutableList<String> = mutableListOf()
 
+    private val args: RegistrationFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -42,6 +45,11 @@ class RegistrationFragment : Fragment() {
     ): View {
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        // TODO: handle telegram token and discover how to get telegram id
+        if (args.token != null) {
+            Toast.makeText(activity, args.token, Toast.LENGTH_SHORT).show()
+        }
 
         groupViewModel = ViewModelProvider(
             this,

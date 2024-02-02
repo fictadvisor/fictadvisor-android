@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.fictadvisor.android.data.dto.AuthLoginResponse
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.RegistrationDTO
 import com.fictadvisor.android.data.dto.StudentDTO
@@ -23,6 +22,7 @@ import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import okhttp3.ResponseBody
 
 class ContinueRegistrationFragment : Fragment() {
     private lateinit var binding: FragmentContinueRegistrationBinding
@@ -60,7 +60,7 @@ class ContinueRegistrationFragment : Fragment() {
             val telegramData = getTelegramData()
 
             if (userData.isEmpty() || studentData.isEmpty()) {
-                showErrorMessage("Будь ласка, введіть правильні дані")
+                showErrorLog("Будь ласка, введіть правильні дані")
                 return@setOnClickListener
             }
 
@@ -70,7 +70,6 @@ class ContinueRegistrationFragment : Fragment() {
 
             authViewModel.authIsRegisterResponse.observe(viewLifecycleOwner) { response ->
                 response?.let {
-
                     handleIsRegisteredResponse(it, studentData, userData, telegramData)
                 }
             }
@@ -145,7 +144,7 @@ class ContinueRegistrationFragment : Fragment() {
     ) {
         when (response) {
             is BaseResponse.Success -> {
-                if (response.data == true) {
+                if (response.data != true) {
                     if (studentData.isCaptain) {
                         CoroutineScope(Dispatchers.IO).launch {
                             val group = studentData.groupId
@@ -159,8 +158,8 @@ class ContinueRegistrationFragment : Fragment() {
                     } else {
                         registerUser(studentData, userData, telegramData)
                     }
-                } else {
-                    registerUser(studentData, userData, telegramData)
+                } else { // User is already registered
+                    showErrorLog("Користувач вже зареєстрований")
                 }
             }
 
@@ -189,7 +188,6 @@ class ContinueRegistrationFragment : Fragment() {
             }
         }
     }
-
     private fun registerUser(
         studentData: StudentDTO, userData: UserDTO, telegramData: TelegramDTO
     ) {
@@ -206,14 +204,16 @@ class ContinueRegistrationFragment : Fragment() {
         }
     }
 
-    private fun handleRegistrationResponse(registerResponse: BaseResponse<AuthLoginResponse>) {
+    private fun handleRegistrationResponse(registerResponse: BaseResponse<ResponseBody>) {
         when (registerResponse) {
             is BaseResponse.Success -> {
-                showSuccessMessage("Реєстрація успішна")
+                showSuccessLog("Реєстрація успішна")
+                val action = ContinueRegistrationFragmentDirections.actionContinueRegistrationFragmentToVerifyEmailFragment()
+                Navigation.findNavController(requireView()).navigate(action)
             }
 
             is BaseResponse.Error -> {
-                showErrorMessage("Помилка реєстрації: ${registerResponse.error?.message}")
+                showErrorLog("Помилка реєстрації: ${registerResponse.error?.message}")
             }
 
             is BaseResponse.Loading -> {
@@ -228,6 +228,10 @@ class ContinueRegistrationFragment : Fragment() {
 
     private fun showSuccessMessage(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showSuccessLog(message: String) {
+        Log.d("ContinueRegistrationFragment", message)
     }
 
     private fun showErrorLog(message: String) {

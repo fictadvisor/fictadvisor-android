@@ -27,7 +27,7 @@
         android:id="@+id/registrationFragment"
         android:name="com.fictadvisor.android.RegistrationFragment"
         android:label="fragment_registration"
-        tools:layout="@layout/fragment_registration" >
+        tools:layout="@layout/fragment_registration">
         <action
             android:id="@+id/action_registrationFragment_to_continueRegistrationFragment"
             app:destination="@id/continueRegistrationFragment">
@@ -47,6 +47,18 @@
                 android:name="group"
                 app:argType="string" />
         </action>
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <!--        In production change URI-->
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://dev.fictadvisor.com//?token={token}" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://dev.fictadvisor.com/?token={token}" />
 
     </fragment>
 
@@ -60,6 +72,23 @@
     <action
         android:id="@+id/action_continueRegistrationFragment_to_registrationFragment"
         app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_continueRegistrationFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.fictadvisor.android.VerifyEmailFragment"
+        android:label="fragment_verify_email"
+        tools:layout="@layout/fragment_verify_email">
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="https://dev.fictadvisor.com/register/email-verification/{token}" />
     </fragment>
 
 </navigation>

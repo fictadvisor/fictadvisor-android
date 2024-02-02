@@ -22,7 +22,7 @@ interface AuthApi {
     suspend fun registerTelegram(@Body registrationTelegramRequest: RegisterTelegramDTO): Response<ResponseBody>
 
     @POST("/v2/auth/register")
-    suspend fun register(@Body registrationRequest: RegistrationDTO): Response<AuthLoginResponse>
+    suspend fun register(@Body registrationRequest: RegistrationDTO) : Response<ResponseBody>
 
     @POST("/v2/auth/refresh")
     suspend fun refresh(): Response<AuthRefreshResponse>
