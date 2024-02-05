@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.compose.foundation.layout.Row
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.fictadvisor.android.data.dto.BaseResponse
@@ -17,6 +18,7 @@ import com.fictadvisor.android.data.dto.UserDTO
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.validator.InputValidator
+import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -28,6 +30,7 @@ class ContinueRegistrationFragment : Fragment() {
     private lateinit var binding: FragmentContinueRegistrationBinding
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
+    private lateinit var inputValidator: RegistrationInputValidator
 
 
     override fun onCreateView(
@@ -36,6 +39,8 @@ class ContinueRegistrationFragment : Fragment() {
     ): View {
         binding = FragmentContinueRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
+
+        inputValidator = RegistrationInputValidator(requireContext())
 
         authViewModel = ViewModelProvider(
             this,
@@ -107,7 +112,7 @@ class ContinueRegistrationFragment : Fragment() {
         val email = binding.editTextTextEmail.text.toString()
         val password = binding.editTextPassword.text.toString()
         val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
-        if(!isInputValid(email, password, passwordConfirm)){
+        if(!inputValidator.isUserDataValid(email, password, passwordConfirm)){
             return UserDTO("", "", "")
         }
         val arguments = arguments
@@ -118,25 +123,6 @@ class ContinueRegistrationFragment : Fragment() {
             }
         }
         return UserDTO("", "", "")
-    }
-
-    private fun isInputValid(email: String, password: String, passwordConfirm: String): Boolean {
-        val emailValidationResult = InputValidator.isEmailValid(email)
-        val passwordValidationResult = InputValidator.isPasswordValid(password)
-
-        if (!emailValidationResult.isValid) {
-            showErrorMessage(emailValidationResult.errorMessage)
-            return false
-        }
-        if (!passwordValidationResult.isValid) {
-            showErrorMessage(passwordValidationResult.errorMessage)
-            return false
-        }
-        if(password != passwordConfirm) {
-            showErrorMessage("Паролі не співпадають")
-            return false
-        }
-        return true
     }
 
     private fun handleIsRegisteredResponse(
@@ -176,7 +162,7 @@ class ContinueRegistrationFragment : Fragment() {
     private fun handleCaptainCheckResponse(captainResponse: BaseResponse<Boolean>) {
         when (captainResponse) {
             is BaseResponse.Success -> {
-                showErrorMessage("Староста для групи уже призначений")
+                Toast.makeText(requireContext(), "Староста для групи призначений", Toast.LENGTH_SHORT).show()
             }
 
             is BaseResponse.Error -> {
@@ -220,14 +206,6 @@ class ContinueRegistrationFragment : Fragment() {
                 // Loading, if needed
             }
         }
-    }
-
-    private fun showErrorMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-    }
-
-    private fun showSuccessMessage(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     private fun showSuccessLog(message: String) {
