@@ -1,8 +1,7 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
-import com.fictadvisor.android.services.TelegramService
+import android.R
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
@@ -17,6 +17,7 @@ import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.GroupDTO
 import com.fictadvisor.android.databinding.FragmentRegistrationBinding
 import com.fictadvisor.android.repository.GroupRepository
+import com.fictadvisor.android.services.TelegramService
 import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.GroupViewModel
 import com.fictadvisor.android.viewmodel.GroupViewModelFactory
@@ -89,7 +90,7 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun setGroupsAdapter() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, groupCodesList)
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, groupCodesList)
 
         val actv: AutoCompleteTextView = binding.groupACTV
         actv.setAdapter(adapter)
@@ -125,12 +126,12 @@ class RegistrationFragment : Fragment() {
         }
 
         val action = RegistrationFragmentDirections.actionRegistrationFragmentToContinueRegistrationFragment(
-            username,
-            name,
-            lastname,
-            middleName,
-            group
-        )
+                username,
+                name,
+                lastname,
+                middleName,
+                group
+            )
 
         Navigation.findNavController(requireView()).navigate(action)
     }

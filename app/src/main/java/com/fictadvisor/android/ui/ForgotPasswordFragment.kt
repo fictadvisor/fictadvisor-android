@@ -1,23 +1,21 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.databinding.FragmentForgotPasswordBinding
-import com.fictadvisor.android.databinding.FragmentLoginBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.Response
 import okhttp3.ResponseBody
 
 class ForgotPasswordFragment : Fragment() {

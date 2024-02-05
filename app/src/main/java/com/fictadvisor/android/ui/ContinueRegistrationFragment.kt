@@ -1,23 +1,17 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.compose.foundation.layout.Row
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
-import com.fictadvisor.android.data.dto.BaseResponse
-import com.fictadvisor.android.data.dto.RegistrationDTO
-import com.fictadvisor.android.data.dto.StudentDTO
-import com.fictadvisor.android.data.dto.TelegramDTO
-import com.fictadvisor.android.data.dto.UserDTO
+import com.fictadvisor.android.data.dto.*
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
-import com.fictadvisor.android.validator.InputValidator
 import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
@@ -179,7 +173,7 @@ class ContinueRegistrationFragment : Fragment() {
     ) {
 
         CoroutineScope(Dispatchers.IO).launch {
-            val registrationDTO = RegistrationDTO(studentData, userData, ) //TODO: add telegram data
+            val registrationDTO = RegistrationDTO(studentData, userData,) //TODO: add telegram data
             authViewModel.register(registrationDTO)
         }
 

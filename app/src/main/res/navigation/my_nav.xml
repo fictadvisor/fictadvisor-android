@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/welcomeFragment"
-        android:name="com.fictadvisor.android.WelcomeFragment"
+        android:name="com.fictadvisor.android.ui.WelcomeFragment"
         android:label="fragment_welcome"
         tools:layout="@layout/fragment_welcome">
         <action
@@ -20,7 +20,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.fictadvisor.android.LoginFragment"
+        android:name="com.fictadvisor.android.ui.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action android:id="@+id/action_loginFragment_to_scheduleFragment" app:destination="@id/scheduleFragment"/>
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.fictadvisor.android.RegistrationFragment"
+        android:name="com.fictadvisor.android.ui.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration">
         <action
@@ -72,7 +72,7 @@
 
     <fragment
         android:id="@+id/continueRegistrationFragment"
-        android:name="com.fictadvisor.android.ContinueRegistrationFragment"
+        android:name="com.fictadvisor.android.ui.ContinueRegistrationFragment"
         android:label="fragment_continue_registration"
         tools:layout="@layout/fragment_continue_registration" >
     <action
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/verifyEmailFragment"
-        android:name="com.fictadvisor.android.VerifyEmailFragment"
+        android:name="com.fictadvisor.android.ui.VerifyEmailFragment"
         android:label="fragment_verify_email"
         tools:layout="@layout/fragment_verify_email">
         <argument
@@ -101,13 +101,13 @@
 
     <fragment
         android:id="@+id/scheduleFragment"
-        android:name="com.fictadvisor.android.ScheduleFragment"
+        android:name="com.fictadvisor.android.ui.ScheduleFragment"
         android:label="fragment_schedule"
         tools:layout="@layout/fragment_schedule" />
 
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.fictadvisor.android.ForgotPasswordFragment"
+        android:name="com.fictadvisor.android.ui.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
         tools:layout="@layout/fragment_forgot_password" >
         <action android:id="@+id/action_forgotPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
@@ -115,7 +115,7 @@
 
     <fragment
         android:id="@+id/resetPasswordFragment"
-        android:name="com.fictadvisor.android.ResetPasswordFragment"
+        android:name="com.fictadvisor.android.ui.ResetPasswordFragment"
         android:label="fragment_reset_password"
         tools:layout="@layout/fragment_reset_password" >
         <argument

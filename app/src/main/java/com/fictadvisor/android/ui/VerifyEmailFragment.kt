@@ -1,18 +1,15 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import com.fictadvisor.android.data.dto.AuthLoginResponse
 import com.fictadvisor.android.data.dto.BaseResponse
-import com.fictadvisor.android.data.dto.RegistrationDTO
-import com.fictadvisor.android.data.dto.VerificationEmailDTO
-import com.fictadvisor.android.databinding.FragmentRegistrationBinding
 import com.fictadvisor.android.databinding.FragmentVerifyEmailBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil

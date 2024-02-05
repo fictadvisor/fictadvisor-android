@@ -1,29 +1,25 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
+import com.fictadvisor.android.R
 import com.fictadvisor.android.data.dto.AuthLoginResponse
 import com.fictadvisor.android.data.dto.BaseResponse
-import com.fictadvisor.android.data.dto.RegistrationDTO
 import com.fictadvisor.android.databinding.FragmentLoginBinding
-import com.fictadvisor.android.databinding.FragmentRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil
 import com.fictadvisor.android.validator.LoginInputValidator
-import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
 
 class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
@@ -64,7 +60,8 @@ class LoginFragment : Fragment() {
         }
 
         binding.textViewForgotPassword.setOnClickListener {
-            view.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_loginFragment_to_forgotPasswordFragment) }
+            view.let { it1 -> Navigation.findNavController(it1)
+                .navigate(R.id.action_loginFragment_to_forgotPasswordFragment) }
         }
 
 
