@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.databinding.FragmentForgotPasswordBinding
 import com.fictadvisor.android.repository.AuthRepository
+import com.fictadvisor.android.validator.LoginInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -22,6 +23,7 @@ class ForgotPasswordFragment : Fragment() {
     private lateinit var binding: FragmentForgotPasswordBinding
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
+    private lateinit var inputValidator: LoginInputValidator
    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -35,6 +37,8 @@ class ForgotPasswordFragment : Fragment() {
         binding = FragmentForgotPasswordBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        inputValidator = LoginInputValidator(requireContext())
+
         authViewModel = ViewModelProvider(
             this,
             AuthViewModelFactory(authRepository)
@@ -42,7 +46,9 @@ class ForgotPasswordFragment : Fragment() {
 
         binding.buttonSend.setOnClickListener {
             val email = binding.editTextSendEmail.text.toString()
-            sendRecoveryPasswordRequest(email)
+            if(inputValidator.isEmailValid(email).isValid){
+                sendRecoveryPasswordRequest(email)
+            }
         }
 
         binding.buttonPrevious.setOnClickListener{
