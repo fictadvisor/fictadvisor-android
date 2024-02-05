@@ -42,6 +42,13 @@ class AuthRepository() {
         ),
     )
 
+    suspend fun resetPassword(token: String, newPassword: String) = authService.resetPassword(
+        token,
+        ResetPasswordDTO(
+            newPassword,
+        ),
+    )
+
     suspend fun getStudent() = authService.getStudent()
 
     suspend fun verifyIsRegistered(username: String?, email: String?) = authService.verifyIsRegistered(username, email)

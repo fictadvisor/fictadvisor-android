@@ -22,7 +22,12 @@
         android:id="@+id/loginFragment"
         android:name="com.fictadvisor.android.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action android:id="@+id/action_loginFragment_to_scheduleFragment" app:destination="@id/scheduleFragment"/>
+        <action android:id="@+id/action_loginFragment_to_welcomeFragment" app:destination="@id/welcomeFragment"/>
+        <action android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+                app:destination="@id/forgotPasswordFragment"/>
+    </fragment>
     <fragment
         android:id="@+id/registrationFragment"
         android:name="com.fictadvisor.android.RegistrationFragment"
@@ -59,6 +64,7 @@
         <deepLink
             android:id="@+id/deepLink2"
             app:uri="https://dev.fictadvisor.com/?token={token}" />
+        <action android:id="@+id/action_registrationFragment_to_welcomeFragment" app:destination="@id/welcomeFragment"/>
 
     </fragment>
 
@@ -89,6 +95,38 @@
         <deepLink
             android:id="@+id/deepLink3"
             app:uri="https://dev.fictadvisor.com/register/email-verification/{token}" />
+        <action android:id="@+id/action_verifyEmailFragment_to_scheduleFragment"
+                app:destination="@id/scheduleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.fictadvisor.android.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/fragment_schedule" />
+
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.fictadvisor.android.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" >
+        <action android:id="@+id/action_forgotPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.fictadvisor.android.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password" >
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLinkResetPassword"
+            app:uri="https://dev.fictadvisor.com/password-recovery/{token}"/>
+        <action android:id="@+id/action_resetPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
     </fragment>
 
 </navigation>
