@@ -1,8 +1,7 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
-import com.fictadvisor.android.services.TelegramService
+import android.R
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +9,7 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.core.widget.addTextChangedListener
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import androidx.navigation.fragment.navArgs
@@ -17,7 +17,8 @@ import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.GroupDTO
 import com.fictadvisor.android.databinding.FragmentRegistrationBinding
 import com.fictadvisor.android.repository.GroupRepository
-import com.fictadvisor.android.validator.InputValidator
+import com.fictadvisor.android.services.TelegramService
+import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.GroupViewModel
 import com.fictadvisor.android.viewmodel.GroupViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -30,6 +31,7 @@ class RegistrationFragment : Fragment() {
     private val groupRepository = GroupRepository()
     private val groupsMap: MutableMap<String, String> = HashMap()
     private val groupCodesList: MutableList<String> = mutableListOf()
+    private lateinit var inputValidator: RegistrationInputValidator
 
     private val args: RegistrationFragmentArgs by navArgs()
 
@@ -45,6 +47,7 @@ class RegistrationFragment : Fragment() {
     ): View {
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
+        inputValidator = RegistrationInputValidator(requireContext())
 
         // TODO: handle telegram token and discover how to get telegram id
         if (args.token != null) {
@@ -67,6 +70,11 @@ class RegistrationFragment : Fragment() {
         binding.buttonAddTelegram.setOnClickListener {
             TelegramService(requireContext()).openTelegramBot()
         }
+
+        binding.buttonPrevious.setOnClickListener {
+            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
+        }
+
         return view
     }
 
@@ -82,7 +90,7 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun setGroupsAdapter() {
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, groupCodesList)
+        val adapter = ArrayAdapter(requireContext(), R.layout.simple_dropdown_item_1line, groupCodesList)
 
         val actv: AutoCompleteTextView = binding.groupACTV
         actv.setAdapter(adapter)
@@ -113,50 +121,21 @@ class RegistrationFragment : Fragment() {
         val middleName = binding.editTextTextFathername.text.toString()
         val group = groupsMap[binding.groupACTV.text.toString()]
 
-        if (group == null || !isInputValid(username, name, lastname, middleName, group)) {
+        if (group == null || !inputValidator.isStudentDataValid(username, name, lastname, middleName, group)) {
             return
         }
 
         val action = RegistrationFragmentDirections.actionRegistrationFragmentToContinueRegistrationFragment(
-            username,
-            name,
-            lastname,
-            middleName,
-            group
-        )
+                username,
+                name,
+                lastname,
+                middleName,
+                group
+            )
 
         Navigation.findNavController(requireView()).navigate(action)
     }
 
-    private fun isInputValid(username:String, name:String, lastname:String, middleName:String, group:String): Boolean {
-        val usernameValidationResult = InputValidator.isUsernameValid(username)
-        val nameValidationResult = InputValidator.isNameValid(name)
-        val lastnameValidationResult = InputValidator.isLastnameValid(lastname)
-        val middleNameValidationResult = InputValidator.isMiddleNameValid(middleName)
-        val groupValidationResult = InputValidator.isGroupValid(group)
-
-        if (!usernameValidationResult.isValid) {
-            Toast.makeText(requireContext(), usernameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (!nameValidationResult.isValid) {
-            Toast.makeText(requireContext(), nameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (!lastnameValidationResult.isValid) {
-            Toast.makeText(requireContext(), lastnameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (!middleNameValidationResult.isValid) {
-            Toast.makeText(requireContext(), middleNameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        if (!groupValidationResult.isValid) {
-            Toast.makeText(requireContext(), groupValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
-        return true
-    }
     companion object {
         @JvmStatic
         fun newInstance(): RegistrationFragment {

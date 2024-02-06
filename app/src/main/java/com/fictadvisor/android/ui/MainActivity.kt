@@ -1,8 +1,8 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.fictadvisor.android.viewmodel.AuthViewModel
+import com.fictadvisor.android.R
 
 class MainActivity : AppCompatActivity() {
 

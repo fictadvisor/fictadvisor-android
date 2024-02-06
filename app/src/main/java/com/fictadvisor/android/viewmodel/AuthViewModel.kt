@@ -24,6 +24,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
     private val authUpdatePasswordResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
     val authUpdatePasswordResponse: LiveData<BaseResponse<AuthLoginResponse>> = authUpdatePasswordResponseMutable
 
+    private val authResetPasswordResponseMutable = MutableLiveData<BaseResponse<AuthLoginResponse>>()
+    val authResetPasswordResponse: LiveData<BaseResponse<AuthLoginResponse>> = authResetPasswordResponseMutable
+
     private val authRefreshResponseMutable = MutableLiveData<BaseResponse<AuthRefreshResponse>>()
     val authRefreshResponse: LiveData<BaseResponse<AuthRefreshResponse>> = authRefreshResponseMutable
 
@@ -107,6 +110,22 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
                     val type = object : TypeToken<ErrorResponse>() {}.type
                     val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
                     authUpdatePasswordResponseMutable.postValue(BaseResponse.Error(errorResponse))
+                }
+            }
+        }
+    }
+
+    fun resetPassword(token: String, resetPasswordDTO: ResetPasswordDTO) {
+        job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+            val response = mainRepository.resetPassword(token, resetPasswordDTO.password)
+            withContext(mainDispatcher) {
+                if (response.isSuccessful) {
+                    authUpdatePasswordResponseMutable.postValue(BaseResponse.Success(response.body()))
+                } else {
+                    val gson = Gson()
+                    val type = object : TypeToken<ErrorResponse>() {}.type
+                    val errorResponse: ErrorResponse? = gson.fromJson(response.errorBody()!!.charStream(), type)
+                   authResetPasswordResponseMutable.postValue(BaseResponse.Error(errorResponse))
                 }
             }
         }

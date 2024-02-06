@@ -1,12 +1,12 @@
-package com.fictadvisor.android
+package com.fictadvisor.android.ui
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
-class LoginFragment : Fragment() {
+import androidx.fragment.app.Fragment
+import com.fictadvisor.android.R
+class ScheduleFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -17,13 +17,15 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_login, container, false)
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_schedule, container, false)
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(): LoginFragment {
-            return LoginFragment()
-            }
+        fun newInstance(): ScheduleFragment {
+            return ScheduleFragment()
+        }
+
     }
 }

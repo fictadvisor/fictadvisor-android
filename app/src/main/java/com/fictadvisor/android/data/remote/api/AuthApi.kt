@@ -39,6 +39,9 @@ interface AuthApi {
     @PUT("/v2/auth/updatePassword")
     suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>
 
+    @POST("/v2/auth/resetPassword/{token}")
+    suspend fun resetPassword(@Path("token") token: String, @Body resetPasswordRequest: ResetPasswordDTO): Response<AuthLoginResponse>
+
     @GET("/v2/auth/me")
     suspend fun getStudent(): Response<OrdinaryStudentResponse>
 

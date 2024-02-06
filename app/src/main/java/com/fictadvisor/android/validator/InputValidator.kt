@@ -2,14 +2,7 @@ package com.fictadvisor.android.validator
 
 import java.util.regex.Pattern
 
-class InputValidator {
-    companion object {
-        data class ValidationResult(val isValid: Boolean, val errorMessage: String = "")
-
-        private fun isLengthValid(value: String, minLength: Int, maxLength: Int): Boolean {
-            return value.length in minLength..maxLength
-        }
-
+open class InputValidator {
         fun isUsernameValid(username: String): ValidationResult {
             if(username.isEmpty()){
                 return ValidationResult(false, "Обов'язкове поле")
@@ -93,6 +86,12 @@ class InputValidator {
                 return ValidationResult(false, "Невірний формат електронної пошти")
             }
             return ValidationResult(true)
+        }
+    companion object {
+        data class ValidationResult(val isValid: Boolean, val errorMessage: String = "")
+
+        private fun isLengthValid(value: String, minLength: Int, maxLength: Int): Boolean {
+            return value.length in minLength..maxLength
         }
     }
 }
