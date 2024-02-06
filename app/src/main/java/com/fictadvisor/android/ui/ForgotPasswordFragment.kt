@@ -44,18 +44,24 @@ class ForgotPasswordFragment : Fragment() {
             AuthViewModelFactory(authRepository)
         ).get(AuthViewModel::class.java)
 
+        setSendButtonListener()
+        setPreviousButtonListener()
+
+        return view
+    }
+
+    private fun setPreviousButtonListener() {
+        binding.buttonPrevious.setOnClickListener {
+            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
+        }
+    }
+    private fun setSendButtonListener() {
         binding.buttonSend.setOnClickListener {
             val email = binding.editTextSendEmail.text.toString()
             if(inputValidator.isEmailValid(email).isValid){
                 sendRecoveryPasswordRequest(email)
             }
         }
-
-        binding.buttonPrevious.setOnClickListener{
-            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
-        }
-
-        return view
     }
 
     private fun sendRecoveryPasswordRequest(email: String) {

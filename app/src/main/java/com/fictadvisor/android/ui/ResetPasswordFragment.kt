@@ -44,12 +44,18 @@ class ResetPasswordFragment : Fragment() {
             AuthViewModelFactory(authRepository)
         ).get(AuthViewModel::class.java)
 
-        if (binding.editTextNewPassword.text.toString() != binding.editTextConfirmPassword.text.toString()) {
-            Toast.makeText(activity, "Паролі не співпадають", Toast.LENGTH_SHORT).show()
-            binding.buttonChangePassword.isEnabled = false
-        }
+        setChangePasswordButtonListener()
 
+        return view
+    }
+
+    private fun setChangePasswordButtonListener() {
         binding.buttonChangePassword.setOnClickListener {
+            if (binding.editTextNewPassword.text.toString() != binding.editTextConfirmPassword.text.toString()) {
+                Toast.makeText(activity, "Паролі не співпадають", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+
             val newPassword = binding.editTextNewPassword.text.toString()
             val token = args.token
             if (token != null) {
@@ -57,7 +63,6 @@ class ResetPasswordFragment : Fragment() {
                 sendResetPasswordRequest(token, newPassword)
             }
         }
-        return view
     }
 
     private fun sendResetPasswordRequest(token: String, newPassword: String) {

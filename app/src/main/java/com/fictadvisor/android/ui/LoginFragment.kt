@@ -47,6 +47,19 @@ class LoginFragment : Fragment() {
             AuthViewModelFactory(authRepository)
         ).get(AuthViewModel::class.java)
 
+        setLoginButtonListener()
+        setPreviousButtonListener()
+        setForgotPasswordTextListener()
+
+        return view
+    }
+
+    private fun setPreviousButtonListener() {
+        binding.buttonPrevious.setOnClickListener {
+            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
+        }
+    }
+    private fun setLoginButtonListener() {
         binding.buttonLogin.setOnClickListener {
             val username = binding.editTextLogin.text.toString()
             val password = binding.editTextPassword.text.toString()
@@ -54,19 +67,14 @@ class LoginFragment : Fragment() {
                 loginUser(username, password)
             }
         }
-
-        binding.buttonPrevious.setOnClickListener {
-            view.let { it1 -> Navigation.findNavController(it1).navigateUp() }
-        }
-
-        binding.textViewForgotPassword.setOnClickListener {
-            view.let { it1 -> Navigation.findNavController(it1)
-                .navigate(R.id.action_loginFragment_to_forgotPasswordFragment) }
-        }
-
-
-        return view
     }
+
+    private fun setForgotPasswordTextListener() {
+        binding.textViewForgotPassword.setOnClickListener {
+            view?.let { it1 -> Navigation.findNavController(it1).navigate(R.id.action_loginFragment_to_forgotPasswordFragment) }
+        }
+    }
+
 
     private fun loginUser(username: String, password: String) {
         CoroutineScope(Dispatchers.IO).launch {
