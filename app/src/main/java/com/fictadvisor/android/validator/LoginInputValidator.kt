@@ -8,7 +8,7 @@ class LoginInputValidator(val context: Context): InputValidator() {
         val usernameValidationResult = isUsernameValid(login)
         val emailValidationResult = isEmailValid(login)
 
-        if (!usernameValidationResult.isValid || emailValidationResult.isValid) {
+        if (!usernameValidationResult.isValid && !emailValidationResult.isValid) {
             Toast.makeText(context, usernameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
             return false
         }
