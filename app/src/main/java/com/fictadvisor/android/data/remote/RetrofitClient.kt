@@ -1,6 +1,7 @@
 package com.fictadvisor.android.data.remote
 
 import com.fictadvisor.android.data.remote.api.AuthApi
+import com.fictadvisor.android.data.remote.api.GroupApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -16,7 +17,7 @@ private const val timeoutConnect = 30 // In seconds
 
 object RetrofitClient {
 
-    private const val baseUrl = ""
+    private const val baseUrl = "https://apidev.fictadvisor.com/v2/"
 
     val retrofitClient: Retrofit.Builder by lazy {
 
@@ -58,4 +59,11 @@ object RetrofitClient {
             .build()
             .create(AuthApi::class.java)
     }
+
+    val groupApi: GroupApi by lazy {
+        retrofitClient
+            .build()
+            .create(GroupApi::class.java)
+    }
+
 }

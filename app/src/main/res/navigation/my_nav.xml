@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/my_nav"
+    app:startDestination="@id/welcomeFragment">
+
+    <fragment
+        android:id="@+id/welcomeFragment"
+        android:name="com.fictadvisor.android.ui.WelcomeFragment"
+        android:label="fragment_welcome"
+        tools:layout="@layout/fragment_welcome">
+        <action
+            android:id="@+id/action_welcomeFragment_to_registrationFragment"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_welcomeFragment_to_loginFragment"
+            app:destination="@id/loginFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.fictadvisor.android.ui.LoginFragment"
+        android:label="fragment_login"
+        tools:layout="@layout/fragment_login" >
+        <action android:id="@+id/action_loginFragment_to_scheduleFragment" app:destination="@id/scheduleFragment"/>
+        <action android:id="@+id/action_loginFragment_to_welcomeFragment" app:destination="@id/welcomeFragment"/>
+        <action android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+                app:destination="@id/forgotPasswordFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.fictadvisor.android.ui.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration">
+        <action
+            android:id="@+id/action_registrationFragment_to_continueRegistrationFragment"
+            app:destination="@id/continueRegistrationFragment">
+            <argument
+                android:name="username"
+                app:argType="string" />
+            <argument
+                android:name="name"
+                app:argType="string" />
+            <argument
+                android:name="lastname"
+                app:argType="string" />
+            <argument
+                android:name="middleName"
+                app:argType="string" />
+            <argument
+                android:name="group"
+                app:argType="string" />
+        </action>
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <!--        In production change URI-->
+        <deepLink
+            android:id="@+id/deepLink"
+            app:uri="https://dev.fictadvisor.com//?token={token}" />
+        <deepLink
+            android:id="@+id/deepLink2"
+            app:uri="https://dev.fictadvisor.com/?token={token}" />
+        <action android:id="@+id/action_registrationFragment_to_welcomeFragment" app:destination="@id/welcomeFragment"/>
+
+    </fragment>
+
+
+
+    <fragment
+        android:id="@+id/continueRegistrationFragment"
+        android:name="com.fictadvisor.android.ui.ContinueRegistrationFragment"
+        android:label="fragment_continue_registration"
+        tools:layout="@layout/fragment_continue_registration" >
+    <action
+        android:id="@+id/action_continueRegistrationFragment_to_registrationFragment"
+        app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/action_continueRegistrationFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/verifyEmailFragment"
+        android:name="com.fictadvisor.android.ui.VerifyEmailFragment"
+        android:label="fragment_verify_email"
+        tools:layout="@layout/fragment_verify_email">
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLink3"
+            app:uri="https://dev.fictadvisor.com/register/email-verification/{token}" />
+        <action android:id="@+id/action_verifyEmailFragment_to_scheduleFragment"
+                app:destination="@id/scheduleFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.fictadvisor.android.ui.ScheduleFragment"
+        android:label="fragment_schedule"
+        tools:layout="@layout/fragment_schedule" />
+
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.fictadvisor.android.ui.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" >
+        <action android:id="@+id/action_forgotPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.fictadvisor.android.ui.ResetPasswordFragment"
+        android:label="fragment_reset_password"
+        tools:layout="@layout/fragment_reset_password" >
+        <argument
+            android:name="token"
+            android:defaultValue="@null"
+            app:argType="string"
+            app:nullable="true" />
+        <deepLink
+            android:id="@+id/deepLinkResetPassword"
+            app:uri="https://dev.fictadvisor.com/password-recovery/{token}"/>
+        <action android:id="@+id/action_resetPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+    </fragment>
+
+</navigation>
