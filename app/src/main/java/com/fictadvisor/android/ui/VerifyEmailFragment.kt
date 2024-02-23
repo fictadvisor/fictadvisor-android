@@ -39,7 +39,7 @@ class VerifyEmailFragment : Fragment() {
         binding = FragmentVerifyEmailBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        storageUtil = StorageUtil(requireContext())
+        storageUtil = StorageUtil(requireActivity())
 
         authViewModel = ViewModelProvider(
             this,
@@ -53,7 +53,16 @@ class VerifyEmailFragment : Fragment() {
             sendEmailVerificationRequest(token)
         }
 
+        setResendButtonOnClickListener()
+
         return view
+    }
+
+    private fun setResendButtonOnClickListener() {
+        binding.resendEmailButton.setOnClickListener {
+            val email = storageUtil.getEmail()!!
+            resendEmailVerificationRequest(email)
+        }
     }
 
     private fun sendEmailVerificationRequest(token: String) {
@@ -64,6 +73,28 @@ class VerifyEmailFragment : Fragment() {
         authViewModel.authVerifyEmailTokenResponse.observe(viewLifecycleOwner) { response ->
             response?.let {
                 handleVerificationEmailResponse(response)
+            }
+        }
+    }
+
+    private fun resendEmailVerificationRequest(email: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            authViewModel.verifyEmail(email)
+        }
+
+        authViewModel.authVerifyEmailResponse.observe(viewLifecycleOwner) { response ->
+            response?.let {
+                when (response) {
+                    is BaseResponse.Success -> {
+                        binding.messageTV.text = "Повторний запит на підтвердження email відправлено на адресу $email"
+                    }
+
+                    is BaseResponse.Error -> {
+                        binding.messageTV.text = "Помилка при повторному відправленні email: ${response.error?.message}"
+                    }
+
+                    is BaseResponse.Loading -> {}
+                }
             }
         }
     }
