@@ -1,8 +1,10 @@
 package com.fictadvisor.android
 
 import com.fictadvisor.android.data.dto.LoginRequest
+import com.fictadvisor.android.data.dto.RegistrationDTO
+import com.fictadvisor.android.data.dto.TelegramDTO
 import com.fictadvisor.android.data.remote.api.AuthApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -14,6 +16,7 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.Mockito.mock
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
@@ -64,12 +67,11 @@ class AuthApiTest {
     }
 
     @Test
-    fun testLogin() = runBlocking {
+    fun `login should return access and refresh tokens`() = runTest {
         val responseJson =
             """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
         server.enqueue(MockResponse().setBody(responseJson))
-
-        val loginRequest = LoginRequest(username = "some_username", password = "some_password")
+        val loginRequest = mock(LoginRequest::class.java)
 
         val response = authApi.login(loginRequest)
 
@@ -79,6 +81,37 @@ class AuthApiTest {
         assertEquals("some_access_token", authResponse!!.accessToken)
         assertEquals("some_refresh_token", authResponse.refreshToken)
     }
+    @Test
+    fun `loginTelegram should return access and refresh tokens`() = runTest {
+        val responseJson = """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val telegramDTO = mock(TelegramDTO::class.java)
+
+        val response = authApi.loginTelegram(telegramDTO)
+
+        assert(response.isSuccessful)
+        val authLoginResponse = response.body()
+        assertNotNull(authLoginResponse)
+        assertEquals("some_access_token", authLoginResponse!!.accessToken)
+        assertEquals("some_refresh_token", authLoginResponse.refreshToken)
+    }
+
+    @Test
+    fun `register should create a new user`() = runTest {
+        val responseJson = """User registered successfully"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val registrationRequest = mock(RegistrationDTO::class.java)
+        val response = authApi.register(registrationRequest)
+
+
+        assertTrue(response.isSuccessful)
+        val responseBody = response.body()
+        assertNotNull(responseBody)
+        assertEquals("User registered successfully", responseBody!!.string())
+    }
+
 
     companion object {
         const val MOCK_WEBSERVER_PORT = 8080
@@ -88,3 +121,7 @@ class AuthApiTest {
         private const val TIMEOUT_CONNECT = 30 // In seconds
     }
 }
+
+
+
+
