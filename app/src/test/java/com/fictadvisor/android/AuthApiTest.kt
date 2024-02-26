@@ -1,10 +1,13 @@
 package com.fictadvisor.android
 
+import com.fictadvisor.android.data.dto.ForgotPasswordDTO
 import com.fictadvisor.android.data.dto.LoginRequest
 import com.fictadvisor.android.data.dto.OrdinaryStudentResponse
 import com.fictadvisor.android.data.dto.RegisterTelegramDTO
 import com.fictadvisor.android.data.dto.RegistrationDTO
+import com.fictadvisor.android.data.dto.ResetPasswordDTO
 import com.fictadvisor.android.data.dto.TelegramDTO
+import com.fictadvisor.android.data.dto.UpdatePasswordDTO
 import com.fictadvisor.android.data.dto.VerificationEmailDTO
 import com.fictadvisor.android.data.remote.api.AuthApi
 import com.google.gson.Gson
@@ -158,6 +161,70 @@ class AuthApiTest {
         assertEquals("Email verification successful", responseBody!!.string())
     }
 
+
+    @Test
+    fun `forgotPassword should return success response`() = runTest {
+        val responseJson = """Password reset email sent successfully"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val forgotPasswordRequest = mock(ForgotPasswordDTO::class.java)
+        val response = authApi.forgotPassword(forgotPasswordRequest)
+
+        assertTrue(response.isSuccessful)
+        val responseBody = response.body()
+        assertNotNull(responseBody)
+        assertEquals("Password reset email sent successfully", responseBody!!.string())
+    }
+
+    @Test
+    fun `verifyEmailToken should return access and refresh tokens`() = runTest {
+        val responseJson =
+            """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val token = "some_token"
+        val response = authApi.verifyEmailToken(token)
+
+        assertTrue(response.isSuccessful)
+        val authResponse = response.body()
+        assertNotNull(authResponse)
+        assertEquals("some_access_token", authResponse!!.accessToken)
+        assertEquals("some_refresh_token", authResponse.refreshToken)
+    }
+
+    @Test
+    fun `updatePassword should return access and refresh tokens`() = runTest {
+        val responseJson =
+            """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val updatePasswordRequest = mock(UpdatePasswordDTO::class.java)
+        val response = authApi.updatePassword(updatePasswordRequest)
+
+        assertTrue(response.isSuccessful)
+        val authResponse = response.body()
+        assertNotNull(authResponse)
+        assertEquals("some_access_token", authResponse!!.accessToken)
+        assertEquals("some_refresh_token", authResponse.refreshToken)
+    }
+
+    @Test
+    fun `resetPassword should return access and refresh tokens`() = runTest {
+        val responseJson =
+            """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val token = "some_token"
+        val resetPasswordRequest = mock(ResetPasswordDTO::class.java)
+        val response = authApi.resetPassword(token, resetPasswordRequest)
+
+        assertTrue(response.isSuccessful)
+        val authResponse = response.body()
+        assertNotNull(authResponse)
+        assertEquals("some_access_token", authResponse!!.accessToken)
+        assertEquals("some_refresh_token", authResponse.refreshToken)
+    }
+
     //auth
     @Test
     fun `getStudent should return successful response` () = runTest {
@@ -264,7 +331,6 @@ class AuthApiTest {
         assertEquals("APPROVED", studentResponse.group.state)
         assertEquals("USER", studentResponse.group.role)
     }
-
 
     companion object {
         const val MOCK_WEBSERVER_PORT = 8080
