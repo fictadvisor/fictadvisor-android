@@ -14,7 +14,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ScheduleApi {
-    @GET("/schedule/groups/{groupId}/general")
+    @GET("/v2/schedule/groups/{groupId}/general")
     suspend fun getEvents(
         @Path("groupId") groupId: String,
         @Query("week") week: Int,
@@ -23,7 +23,7 @@ interface ScheduleApi {
         @Query("addPractice") addPractice: Boolean = true
     ): Response<GetEventResponse>
 
-    @GET("/schedule/groups/{groupId}/events")
+    @GET("/v2/schedule/groups/{groupId}/events")
     suspend fun getEventsAuthorized(
         @Path("groupId") groupId: String,
         @Query("week") week: Int,
@@ -34,25 +34,25 @@ interface ScheduleApi {
         @Query("otherEvents") otherEvents: Boolean = true
     ): Response<GetEventResponse>
 
-    @GET("/schedule/events/{eventId}")
+    @GET("/v2/schedule/events/{eventId}")
     suspend fun getEventInfo(
         @Path("eventId") eventId: String,
         @Query("week") week: Any // You can define the type accordingly
     ): Response<DetailedEventResponse>
 
-    @DELETE("/schedule/groups/{groupId}/events/{eventId}")
+    @DELETE("/v2/schedule/groups/{groupId}/events/{eventId}")
     suspend fun deleteEventById(
         @Path("groupId") groupId: String,
         @Path("eventId") eventId: String
     ): Response<DetailedEventResponse>
 
-    @POST("/schedule/events")
+    @POST("/v2/schedule/events")
     suspend fun addEvent(
         @Body body: PostEventDTO,
         @Query("groupId") groupId: String
     ): Response<DetailedEventResponse>
 
-    @PATCH("/schedule/groups/{groupId}/events/{eventId}")
+    @PATCH("/v2/schedule/groups/{groupId}/events/{eventId}")
     suspend fun editEvent(
         @Body body: PatchEventDTO,
         @Path("groupId") groupId: String,
