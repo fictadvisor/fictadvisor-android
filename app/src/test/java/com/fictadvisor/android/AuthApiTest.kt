@@ -1,8 +1,10 @@
 package com.fictadvisor.android
 
 import com.fictadvisor.android.data.dto.LoginRequest
+import com.fictadvisor.android.data.dto.RegisterTelegramDTO
 import com.fictadvisor.android.data.dto.RegistrationDTO
 import com.fictadvisor.android.data.dto.TelegramDTO
+import com.fictadvisor.android.data.dto.VerificationEmailDTO
 import com.fictadvisor.android.data.remote.api.AuthApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.Interceptor
@@ -112,6 +114,47 @@ class AuthApiTest {
         assertEquals("User registered successfully", responseBody!!.string())
     }
 
+    @Test
+    fun `registerTelegram should register with Telegram` () = runTest {
+        val responseJson = """Telegram registration successful"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val registrationTelegramRequest = mock(RegisterTelegramDTO::class.java)
+        val response = authApi.registerTelegram(registrationTelegramRequest)
+
+        assertTrue(response.isSuccessful)
+        val responseBody = response.body()
+        assertNotNull(responseBody)
+        assertEquals("Telegram registration successful", responseBody!!.string())
+    }
+
+    @Test
+    fun `refresh should return new tokens` () = runTest {
+        val responseJson =
+            """{"accessToken": "new_access_token"}"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val response = authApi.refresh()
+
+        assertTrue(response.isSuccessful)
+        val authRefreshResponse = response.body()
+        assertNotNull(authRefreshResponse)
+        assertEquals("new_access_token", authRefreshResponse!!.accessToken)
+    }
+
+    @Test
+    fun `verifyEmail should verify user's email` () = runTest {
+        val responseJson = """Email verification successful"""
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val verifyEmailRequest = mock(VerificationEmailDTO::class.java)
+        val response = authApi.verifyEmail(verifyEmailRequest)
+
+        assertTrue(response.isSuccessful)
+        val responseBody = response.body()
+        assertNotNull(responseBody)
+        assertEquals("Email verification successful", responseBody!!.string())
+    }
 
     companion object {
         const val MOCK_WEBSERVER_PORT = 8080
