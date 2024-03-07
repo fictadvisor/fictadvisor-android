@@ -12,6 +12,7 @@ import androidx.navigation.Navigation
 import com.fictadvisor.android.data.dto.*
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
+import com.fictadvisor.android.utils.StorageUtil
 import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
@@ -25,6 +26,7 @@ class ContinueRegistrationFragment : Fragment() {
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
     private lateinit var inputValidator: RegistrationInputValidator
+    private lateinit var storageUtil: StorageUtil
 
 
     override fun onCreateView(
@@ -35,6 +37,8 @@ class ContinueRegistrationFragment : Fragment() {
         val view = binding.root
 
         inputValidator = RegistrationInputValidator(requireContext())
+
+        storageUtil = StorageUtil(requireActivity())
 
         authViewModel = ViewModelProvider(
             this,
@@ -188,6 +192,7 @@ class ContinueRegistrationFragment : Fragment() {
         when (registerResponse) {
             is BaseResponse.Success -> {
                 showSuccessLog("Реєстрація успішна")
+                storageUtil.setEmail(binding.editTextTextEmail.text.toString())
                 val action = ContinueRegistrationFragmentDirections.actionContinueRegistrationFragmentToVerifyEmailFragment()
                 Navigation.findNavController(requireView()).navigate(action)
             }

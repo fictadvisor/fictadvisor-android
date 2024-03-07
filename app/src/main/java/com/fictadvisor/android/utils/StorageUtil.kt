@@ -67,4 +67,16 @@ class StorageUtil(private val context: Context) {
             null
         }
     }
+
+    fun setEmail(email: String) {
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().apply {
+            putString(StorageKeys.EMAIL.name, email)
+            apply()
+        }
+    }
+
+    fun getEmail(): String? {
+        val prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
+        return prefs.getString(StorageKeys.EMAIL.name, null)
+    }
 }
