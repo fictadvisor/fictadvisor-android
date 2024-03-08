@@ -114,6 +114,128 @@ class ScheduleApiTest {
     }
 
     @Test
+    fun `getEvents should return events` () = runTest {
+        val responseJson = """
+            {
+                "week": "1",
+                "events": [
+                    {
+                        "id": "1",
+                        "name": "Event",
+                        "startTime": "2024-03-08T13:38:55.680Z",
+                        "endTime": "2024-03-08T14:38:55.680Z",
+                        "eventType": "LECTURE"
+                    }
+                ],
+                "startTime": "2024-03-08T00:00:00Z"
+            }
+        """.trimIndent()
+
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val response = scheduleApi.getEvents("group_id", 1)
+
+        assertTrue(response.isSuccessful)
+
+        val eventResponse = response.body()
+        assertNotNull(eventResponse)
+
+        assertEquals("1", eventResponse!!.week)
+        assertNotNull(eventResponse.events)
+        assertEquals(1, eventResponse.events.size)
+        val event = eventResponse.events[0]
+        assertEquals("1", event.id)
+        assertEquals("Event", event.name)
+        // l
+        assertEquals("2024-03-08T13:38:55.680Z", event.startTime)
+        assertEquals("2024-03-08T14:38:55.680Z", event.endTime)
+    }
+
+    @Test
+    fun `getEventInfo should return information about event` () = runTest {
+        val responseJson = """
+            {
+                "id": "1",
+                "name": "Event",
+                "disciplineId": "1234",
+                "eventType": "LECTURE",
+                "startTime": "2024-03-08T13:38:55.680Z",
+                "endTime": "2024-03-08T14:38:55.680Z",
+                "period": "NO_PERIOD",
+                "url": "https://example.com",
+                "eventInfo": "Info about event",
+                "disciplineInfo": "Info about discipline",
+                "teachers": [
+                    {
+                        "id": "012",
+                        "firstName": "John",
+                        "middleName": "",
+                        "lastName": "Doe"
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val response = scheduleApi.getEventInfo("id", 1)
+
+        assertTrue(response.isSuccessful)
+
+        val eventResponse = response.body()
+        assertNotNull(eventResponse)
+
+        assertEquals("https://example.com", eventResponse!!.url)
+        assertEquals("Info about event", eventResponse.eventInfo)
+        assertEquals(TDiscipline.LECTURE, eventResponse.eventType)
+        assertEquals("Info about discipline", eventResponse.disciplineInfo)
+        assertEquals(TEventPeriod.NO_PERIOD, eventResponse.period)
+        val teacher = eventResponse.teachers[0]
+        assertEquals("012", teacher.id)
+        assertEquals("John", teacher.firstName)
+        assertEquals("", teacher.middleName)
+        assertEquals("Doe", teacher.lastName)
+    }
+
+    @Test
+    fun `getEventsAuthorized should return events` () = runTest {
+        val responseJson = """
+            {
+                "week": 1,
+                "events": [
+                    {
+                        "id": "1",
+                        "name": "Event",
+                        "startTime": "2024-03-08T13:38:55.680Z",
+                        "endTime": "2024-03-08T14:38:55.680Z",
+                        "eventType": "LECTURE"
+                    }
+                ],
+                "startTime": "2024-03-08T00:00:00Z"
+            }
+        """.trimIndent()
+
+        server.enqueue(MockResponse().setBody(responseJson))
+
+        val response = scheduleApi.getEventsAuthorized("group_id", 1, true)
+
+        assertTrue(response.isSuccessful)
+
+        val eventResponse = response.body()
+        assertNotNull(eventResponse)
+
+        assertEquals("1", eventResponse!!.week)
+        assertNotNull(eventResponse.events)
+        assertEquals(1, eventResponse.events.size)
+        val event = eventResponse.events[0]
+        assertEquals("1", event.id)
+        assertEquals("Event", event.name)
+        assertEquals("2024-03-08T13:38:55.680Z", event.startTime)
+        assertEquals("2024-03-08T14:38:55.680Z", event.endTime)
+        assertEquals("2024-03-08T00:00:00Z", eventResponse.startTime)
+    }
+
+    @Test
     fun `addEvent should return the added event`() = runTest {
         val testPostEventDTO = PostEventDTO(
             groupId = "some-group-id",
