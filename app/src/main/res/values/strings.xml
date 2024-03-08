@@ -18,4 +18,7 @@
     <string name="name">Ім\'я</string>
     <string name="group">Група</string>
     <string name="next">Далі</string>
+    <string name="loginWithTelegram">Увійти за допомогою Telegram</string>
+    <string name="or">або</string>
+    <string name="EmailOrUsername">Пошта або юзернейм</string>
 </resources>
