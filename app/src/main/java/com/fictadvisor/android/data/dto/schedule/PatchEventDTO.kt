@@ -4,7 +4,7 @@ data class PatchEventDTO(
     val week: Int,
     val changeStartDate: Boolean,
     val changeEndDate: Boolean,
-    val disciplineType: String? = null,
+    val eventType: TDiscipline? = null,
     val url: String,
     val eventInfo: String,
     val disciplineInfo: String,

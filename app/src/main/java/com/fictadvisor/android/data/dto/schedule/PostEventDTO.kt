@@ -6,7 +6,7 @@ data class PostEventDTO (
     val disciplineId: String,
     val url: String,
     val eventInfo: String,
-    val disciplineType: TDiscipline,
+    val eventType: TDiscipline,
     val disciplineInfo: String,
     val period: TEventPeriod,
     )
