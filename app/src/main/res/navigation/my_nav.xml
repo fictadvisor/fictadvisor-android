@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/welcomeFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/welcomeFragment"
@@ -37,8 +37,8 @@
             android:id="@+id/action_registrationFragment_to_continueRegistrationFragment"
             app:destination="@id/continueRegistrationFragment">
             <argument
-                android:name="username"
-                app:argType="string" />
+                android:name="isCaptain"
+                app:argType="boolean" />
             <argument
                 android:name="name"
                 app:argType="string" />
@@ -127,6 +127,15 @@
             android:id="@+id/deepLinkResetPassword"
             app:uri="https://dev.fictadvisor.com/password-recovery/{token}"/>
         <action android:id="@+id/action_resetPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.fictadvisor.android.ui.SplashFragment"
+        android:label="fragment_splash"
+        tools:layout="@layout/fragment_splash" >
+        <action
+            android:id="@+id/action_splashFragment_to_welcomeFragment"
+            app:destination="@id/welcomeFragment" />
     </fragment>
 
 </navigation>

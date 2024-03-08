@@ -2,4 +2,20 @@
     <string name="app_name">fictadvisor-android</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="register">Зареєструватися</string>
+    <string name="surname">Прізвище</string>
+    <string name="fatherName">По-батькові</string>
+    <string name="agreeToUsePersonalData">Погоджуюсь на обробку персональних даних</string>
+    <string name="login">Увійти</string>
+    <string name="email">Пошта</string>
+    <string name="username">Юзернейм</string>
+    <string name="password">Пароль</string>
+    <string name="confirmpassword">Підтвердження пароля</string>
+    <string name="registeru">Зареєструватись</string>
+    <string name="back">Назад</string>
+    <string name="Iamcaptain">Я староста</string>
+    <string name="connectTelegram">Приєднай Telegram</string>
+    <string name="name">Ім\'я</string>
+    <string name="group">Група</string>
+    <string name="next">Далі</string>
 </resources>

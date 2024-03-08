@@ -5,22 +5,17 @@ import android.widget.Toast
 
 class RegistrationInputValidator(val context: Context): InputValidator() {
     fun isStudentDataValid(
-        username: String,
         name: String,
         lastname: String,
         middleName: String,
         group: String
     ): Boolean {
-        val usernameValidationResult = isUsernameValid(username)
         val nameValidationResult = isNameValid(name)
         val lastnameValidationResult = isLastnameValid(lastname)
         val middleNameValidationResult = isMiddleNameValid(middleName)
         val groupValidationResult = isGroupValid(group)
 
-        if (!usernameValidationResult.isValid) {
-            Toast.makeText(context, usernameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
-            return false
-        }
+
         if (!nameValidationResult.isValid) {
             Toast.makeText(context, nameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
             return false
@@ -40,9 +35,10 @@ class RegistrationInputValidator(val context: Context): InputValidator() {
         return true
     }
 
-    fun isUserDataValid(email: String, password: String, passwordConfirm: String): Boolean {
+    fun isUserDataValid(email: String, password: String, passwordConfirm: String, username: String): Boolean {
         val emailValidationResult = isEmailValid(email)
         val passwordValidationResult = isPasswordValid(password)
+        val usernameValidationResult = isUsernameValid(username)
 
         if (!emailValidationResult.isValid) {
             Toast.makeText(context, emailValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
@@ -54,6 +50,11 @@ class RegistrationInputValidator(val context: Context): InputValidator() {
         }
         if(password != passwordConfirm) {
             Toast.makeText(context, "Паролі не співпадають", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (!usernameValidationResult.isValid) {
+            Toast.makeText(context, usernameValidationResult.errorMessage, Toast.LENGTH_SHORT).show()
             return false
         }
         return true

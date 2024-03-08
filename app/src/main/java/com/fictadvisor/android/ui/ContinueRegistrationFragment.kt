@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -47,6 +46,7 @@ class ContinueRegistrationFragment : Fragment() {
 
         setBackButtonListener()
         setRegisterButtonListener()
+
         return view
     }
 
@@ -91,7 +91,7 @@ class ContinueRegistrationFragment : Fragment() {
             val name = arguments.getString("name")
             val middleName = arguments.getString("middleName")
             val lastname = arguments.getString("lastname")
-            val isCaptain = binding.checkBoxCaptain.isChecked
+            val isCaptain = arguments.getBoolean("isCaptain")
 
             if (name != null && lastname != null && middleName != null && group != null) {
                 return StudentDTO(
@@ -110,17 +110,12 @@ class ContinueRegistrationFragment : Fragment() {
         val email = binding.editTextTextEmail.text.toString()
         val password = binding.editTextPassword.text.toString()
         val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
-        if(!inputValidator.isUserDataValid(email, password, passwordConfirm)){
+        val username = binding.editTextTextUsername.text.toString()
+        if(!inputValidator.isUserDataValid(email, password, passwordConfirm, username)){
             return UserDTO("", "", "")
+        } else {
+              return UserDTO(username = username, email = email, password = password)
         }
-        val arguments = arguments
-        if (arguments != null) {
-            val username = arguments.getString("username")
-            if (username != null) {
-                return UserDTO(username = username, email = email, password = password)
-            }
-        }
-        return UserDTO("", "", "")
     }
 
     private fun handleIsRegisteredResponse(
@@ -129,20 +124,8 @@ class ContinueRegistrationFragment : Fragment() {
         when (response) {
             is BaseResponse.Success -> {
                 if (response.data != true) {
-                    if (studentData.isCaptain) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val group = studentData.groupId
-                            authViewModel.checkCaptain(group)
-                        }
-                        authViewModel.authCheckCaptainResponse.observe(viewLifecycleOwner) { captainResponse ->
-                            captainResponse?.let {
-                                handleCaptainCheckResponse(captainResponse)
-                            }
-                        }
-                    } else {
-                        registerUser(studentData, userData, telegramData)
-                    }
-                } else { // User is already registered
+                    registerUser(studentData, userData, telegramData)
+                } else {
                     showErrorLog("Користувач вже зареєстрований")
                 }
             }
@@ -157,21 +140,6 @@ class ContinueRegistrationFragment : Fragment() {
         }
     }
 
-    private fun handleCaptainCheckResponse(captainResponse: BaseResponse<Boolean>) {
-        when (captainResponse) {
-            is BaseResponse.Success -> {
-                Toast.makeText(requireContext(), "Староста для групи призначений", Toast.LENGTH_SHORT).show()
-            }
-
-            is BaseResponse.Error -> {
-                showErrorLog("Check captain error: ${captainResponse.error}")
-            }
-
-            is BaseResponse.Loading -> {
-                // Loading, if needed
-            }
-        }
-    }
     private fun registerUser(
         studentData: StudentDTO, userData: UserDTO, telegramData: TelegramDTO
     ) {

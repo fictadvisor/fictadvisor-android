@@ -3,67 +3,78 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/spinner_group"
+    android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.RegistrationFragment">
 
-    <TextView
-        android:id="@+id/textViewLogin1"
+    <CheckBox
+        android:id="@+id/checkBox_captain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
-        android:text="Створи акаунт"
+        android:layout_marginTop="36dp"
+        android:layout_marginEnd="16dp"
+        android:fontFamily="@font/manrope"
+        android:text="@string/Iamcaptain"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername" />
+
+    <ImageView
+        android:id="@+id/imageView_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="107dp"
+        android:layout_marginTop="56dp"
+        android:layout_marginEnd="107dp"
+        android:src="@drawable/ic_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
     <Button
         android:id="@+id/button_addTelegram"
+        style="@style/ButtonStyle_Red_Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="25dp"
+        android:drawableStart="@drawable/ic_telegram"
+        android:drawablePadding="10dp"
         android:maxLines="1"
-        android:text="Приєднати Telegram"
+        android:text="@string/connectTelegram"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogin1" />
-
-    <EditText
-        android:id="@+id/editTextText_username"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="Юзернейм"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button_addTelegram" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
     <EditText
         android:id="@+id/editTextText_lastname"
-        android:layout_width="wrap_content"
+        style="@style/EditText_Transparent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
         android:ems="10"
-        android:hint="Прізвище"
+        android:hint="@string/surname"
         android:inputType="text"
         android:maxLength="40"
         android:maxLines="1"
         android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_username"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_username" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
     <EditText
         android:id="@+id/editTextText_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        style="@style/EditText_Transparent"
+
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="Ім'я"
+        android:hint="@string/name"
         android:inputType="text"
         android:maxLength="40"
         android:maxLines="1"
@@ -73,11 +84,15 @@
 
     <EditText
         android:id="@+id/editTextText_fathername"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        style="@style/EditText_Transparent"
+
         android:layout_marginTop="24dp"
         android:ems="10"
-        android:hint="По батькові"
+        android:hint="@string/fatherName"
         android:inputType="text"
         android:maxLength="40"
         android:maxLines="1"
@@ -88,10 +103,12 @@
     <AutoCompleteTextView
         android:id="@+id/groupACTV"
         android:layout_width="212dp"
-        android:layout_height="45dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
+        style="@style/EditText_Transparent"
+
         android:ems="10"
-        android:hint="Група"
+        android:hint="@string/group"
         android:minHeight="48dp"
         app:layout_constraintStart_toStartOf="@+id/editTextText_fathername"
         app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername"
@@ -99,24 +116,44 @@
 
     <Button
         android:id="@+id/button_next"
+        style="@style/ButtonStyle_Gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:layout_marginBottom="32dp"
-        android:text="Далі"
+        android:layout_marginBottom="30dp"
+        android:text="@string/next"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/checkBox_captain" />
 
     <Button
-            android:id="@+id/button_previous"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="32dp"
-            android:text="Назад"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+        android:id="@+id/button_previous"
+        style="@style/ButtonStyle_Transparent_Gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="30dp"
+        android:drawableLeft="@drawable/ic_arrow_back"
+        android:drawablePadding="10dp"
+        android:text="@string/back"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/groupACTV" />
 
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_first_step"
+        app:layout_constraintEnd_toEndOf="@+id/imageView_logo"
+        app:layout_constraintStart_toStartOf="@+id/imageView_logo"
+        app:layout_constraintTop_toBottomOf="@+id/imageView_logo" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:src="@drawable/ic_divider"
+        app:layout_constraintTop_toBottomOf="@+id/button_addTelegram"
+        tools:layout_editor_absoluteX="41dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
