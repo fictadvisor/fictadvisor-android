@@ -93,6 +93,7 @@ class RegistrationFragment : Fragment() {
         actv.addTextChangedListener {
             if (groupCodesList.find { it.contentEquals(actv.text.toString()) } == null) {
                 actv.error = "Невідомий шифр групи"
+                binding.groupACTVLayout.error = "затичка"
             } else {
                 actv.error = null
             }

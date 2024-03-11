@@ -50,7 +50,6 @@ class LoginFragment : Fragment() {
         setLoginButtonListener()
         setPreviousButtonListener()
         setForgotPasswordTextListener()
-
         return view
     }
 
@@ -65,6 +64,11 @@ class LoginFragment : Fragment() {
             val password = binding.editTextPassword.text.toString()
             if (inputValidator.isLoginDataValid(username)) {
                 loginUser(username, password)
+                binding.editTextLoginLayout.error = null
+                binding.editTextPasswordLayout.error = null
+            } else {
+                binding.editTextLoginLayout.error = "giiiiirl, i m the problem"
+                binding.editTextPasswordLayout.error = "giiiiirl, i m the problem2"
             }
         }
     }

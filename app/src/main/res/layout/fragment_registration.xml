@@ -6,6 +6,7 @@
     android:background="@drawable/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/Theme.MaterialComponents"
     tools:context=".ui.RegistrationFragment">
 
     <CheckBox
@@ -18,7 +19,8 @@
         android:text="@string/Iamcaptain"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout"
+        app:layout_constraintStart_toEndOf="@+id/groupACTV_layout"/>
 
     <ImageView
         android:id="@+id/imageView_logo"
@@ -48,71 +50,87 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 
-    <EditText
-        android:id="@+id/editTextText_lastname"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_lastname_layout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/surname"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
 
-    <EditText
-        android:id="@+id/editTextText_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView3"
+        style="@style/EditText_Transparent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_lastname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/surname"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_name_layout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        style="@style/EditText_Transparent"
+        android:layout_marginTop="16dp"
 
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="@string/name"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_lastname"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_lastname" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/editTextText_lastname_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_lastname_layout"
+        style="@style/EditText_Transparent">
 
-    <EditText
-        android:id="@+id/editTextText_fathername"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/name"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_fathername_layout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        style="@style/EditText_Transparent"
+        android:layout_marginTop="16dp"
 
-        android:layout_marginTop="24dp"
-        android:ems="10"
-        android:hint="@string/fatherName"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_name"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_name" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/editTextText_name_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_name_layout"
+        style="@style/EditText_Transparent">
 
-    <AutoCompleteTextView
-        android:id="@+id/groupACTV"
-        android:layout_width="212dp"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_fathername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/fatherName"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/groupACTV_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        style="@style/EditText_Transparent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout"
+        app:layout_constraintEnd_toStartOf="@+id/checkBox_captain"
+        android:minWidth="212dp"
+        style="@style/EditText_Transparent_AutoComplete">
 
-        android:ems="10"
-        android:hint="@string/group"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_fathername"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername"
-        android:completionThreshold="1" />
+        <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/groupACTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="@string/group"
+            android:completionThreshold="1" />
+    </com.google.android.material.textfield.TextInputLayout>
+
 
     <Button
         android:id="@+id/button_next"
@@ -134,7 +152,7 @@
         android:drawablePadding="10dp"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/groupACTV" />
+        app:layout_constraintStart_toStartOf="@+id/groupACTV_layout" />
 
     <ImageView
         android:id="@+id/imageView2"

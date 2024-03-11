@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:theme="@style/Theme.MaterialComponents"
     tools:context=".ui.ContinueRegistrationFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -34,79 +35,88 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextText_email"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_username_layout"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
         android:layout_marginRight="16dp"
-
-
-        android:ems="10"
-        android:hint="@string/email"
-        android:inputType="textEmailAddress"
-        android:maxLength="40"
-        android:maxLines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_username" />
-
-    <EditText
-        android:id="@+id/editTextText_username"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
 
-        android:ems="10"
-        android:hint="@string/username"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView4" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView4"
+        style="@style/EditText_Transparent">
 
-    <EditText
-        android:id="@+id/editTextPassword"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/username"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_email_layout"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
         android:layout_marginRight="16dp"
-        android:drawableEnd="@drawable/ic_eye"
+        android:layout_marginTop="16dp"
 
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:maxLength="40"
-        android:maxLines="1"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_email"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_email" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_username_layout"
+        style="@style/EditText_Transparent">
 
-    <EditText
-        android:id="@+id/editTextText_confirmPass"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/email"
+            android:inputType="textEmailAddress"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextPassword_layout"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="24dp"
         android:layout_marginRight="16dp"
-        android:drawableEnd="@drawable/ic_eye"
+        android:layout_marginTop="24dp"
 
-        android:ems="10"
-        android:hint="@string/confirmpassword"
-        android:inputType="textPassword"
-        android:maxLength="40"
-        android:maxLines="1"
-        app:layout_constraintStart_toStartOf="@+id/editTextPassword"
-        app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
+        app:layout_constraintStart_toStartOf="@+id/editTextText_email_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_email_layout"
+        style="@style/EditText_Transparent_Password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/password"
+            android:inputType="textEmailAddress"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editTextText_confirmPass_layout"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="24dp"
+
+        app:layout_constraintStart_toStartOf="@+id/editTextPassword_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPassword_layout"
+        style="@style/EditText_Transparent_Password">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextText_confirmPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/confirmpassword"
+            android:inputType="textEmailAddress"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
         android:id="@+id/checkBox"
@@ -119,7 +129,7 @@
         android:text="@string/agreeToUsePersonalData"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_confirmPass" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_confirmPass_layout" />
 
     <Button
         android:id="@+id/button_register"
@@ -128,7 +138,7 @@
         android:layout_height="wrap_content"
         android:text="@string/registeru"
         app:layout_constraintBottom_toBottomOf="@+id/button_back"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText_email"
+        app:layout_constraintEnd_toEndOf="@+id/editTextText_email_layout"
         app:layout_constraintTop_toTopOf="@+id/button_back" />
 
     <Button
@@ -141,6 +151,6 @@
         android:drawablePadding="10dp"
         android:text="@string/back"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/editTextText_username" />
+        app:layout_constraintStart_toStartOf="@+id/editTextText_username_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

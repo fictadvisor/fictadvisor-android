@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
+    android:theme="@style/Theme.MaterialComponents"
     tools:context=".ui.RegistrationFragment">
 
     <ImageView
@@ -43,7 +44,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="24dp"
         app:layout_constraintTop_toBottomOf="@id/button_addTelegram"
-        app:layout_constraintBottom_toTopOf="@+id/editText_login">
+        app:layout_constraintBottom_toTopOf="@+id/editText_login_layout">
 
         <TextView
             android:id="@+id/orText"
@@ -73,47 +74,49 @@
             />
     </RelativeLayout>
 
-    <EditText
-        android:id="@+id/editText_login"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editText_login_layout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/EmailOrUsername"
-        android:inputType="text"
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewLogin2"
-        app:layout_constraintBottom_toTopOf="@id/editText_password" />
+        app:layout_constraintBottom_toTopOf="@id/editText_password_layout"
 
-    <EditText
-        android:id="@+id/editText_password"
-        style="@style/EditText_Transparent"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/EditText_Transparent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="@string/EmailOrUsername"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/editText_password_layout"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
-        android:ems="10"
-        android:hint="@string/password"
-        android:inputType="textPassword"
-        android:drawableEnd="@drawable/ic_eye"
 
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editText_login_layout"
+        app:layout_constraintBottom_toTopOf="@+id/textView_ForgotPassword"
 
+        style="@style/EditText_Transparent_Password">
 
-        android:maxLength="40"
-        android:maxLines="1"
-        android:minHeight="48dp"
-        app:layout_constraintStart_toStartOf="@+id/editText_login"
-        app:layout_constraintEnd_toEndOf="@+id/editText_login"
-        app:layout_constraintTop_toBottomOf="@+id/editText_login" />
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editText_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
 
+            android:hint="@string/password"
+            />
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
             android:id="@+id/textView_ForgotPassword"
@@ -126,7 +129,7 @@
             android:focusable="true"
         android:textColor="#54ADF4"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editText_password"/>
+            app:layout_constraintTop_toBottomOf="@id/editText_password_layout"/>
 
     <Button
         android:id="@+id/button_login"
