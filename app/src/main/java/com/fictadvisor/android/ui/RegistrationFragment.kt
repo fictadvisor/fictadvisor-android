@@ -1,5 +1,6 @@
 package com.fictadvisor.android.ui
 
+import RegistrationViewModel
 import android.R
 import android.os.Bundle
 import android.util.Log
@@ -20,7 +21,6 @@ import com.fictadvisor.android.databinding.FragmentRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.repository.GroupRepository
 import com.fictadvisor.android.services.TelegramService
-import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import com.fictadvisor.android.viewmodel.GroupViewModel
@@ -35,7 +35,7 @@ class RegistrationFragment : Fragment() {
     private val groupRepository = GroupRepository()
     private val groupsMap: MutableMap<String, String> = HashMap()
     private val groupCodesList: MutableList<String> = mutableListOf()
-    private lateinit var inputValidator: RegistrationInputValidator
+    private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var authViewModel: AuthViewModel
     private var authRepository = AuthRepository()
 
@@ -54,7 +54,7 @@ class RegistrationFragment : Fragment() {
     ): View {
         binding = FragmentRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
-        inputValidator = RegistrationInputValidator(requireContext())
+        registrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
 
         // TODO: handle telegram token and discover how to get telegram id
         if (args.token != null) {
@@ -72,6 +72,7 @@ class RegistrationFragment : Fragment() {
         getAllGroups()
         setGroupsAdapter()
         setValidationOfGroupCode()
+        initViewModelObservers()
 
         binding.buttonNext.setOnClickListener {
             onNextClicked()
@@ -92,8 +93,7 @@ class RegistrationFragment : Fragment() {
         val actv = binding.groupACTV
         actv.addTextChangedListener {
             if (groupCodesList.find { it.contentEquals(actv.text.toString()) } == null) {
-                actv.error = "Невідомий шифр групи"
-                binding.groupACTVLayout.error = "затичка"
+                binding.groupACTVLayout.error = "Невідомий шифр групи"
             } else {
                 actv.error = null
             }
@@ -155,7 +155,7 @@ class RegistrationFragment : Fragment() {
                 }
                 return
             } else {
-                Toast.makeText(requireContext(), "Виберіть групу", Toast.LENGTH_SHORT).show()
+                binding.groupACTVLayout.error = "Виберіть групу"
                 return
             }
         }
@@ -164,7 +164,12 @@ class RegistrationFragment : Fragment() {
     }
 
     private fun proceedToNextPage(isCaptain: Boolean, name: String, lastname: String, middleName: String, group: String?) {
-        if (group == null || !inputValidator.isStudentDataValid(name, lastname, middleName, group)) {
+        if (group == null) {
+            binding.groupACTVLayout.error = "Виберіть групу"
+            return
+        }
+        val isValid = registrationViewModel.validateStudentData(name, lastname, middleName, group)
+        if (!isValid) {
             return
         }
 
@@ -179,4 +184,21 @@ class RegistrationFragment : Fragment() {
         Navigation.findNavController(requireView()).navigate(action)
     }
 
+    private fun initViewModelObservers() {
+        registrationViewModel.nameErrorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.editTextTextNameLayout.error = errorMessage
+        }
+
+        registrationViewModel.lastnameErrorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.editTextTextLastnameLayout.error = errorMessage
+        }
+
+        registrationViewModel.middleNameErrorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.editTextTextFathernameLayout.error = errorMessage
+        }
+
+        registrationViewModel.groupErrorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.groupACTVLayout.error = errorMessage
+        }
+    }
 }

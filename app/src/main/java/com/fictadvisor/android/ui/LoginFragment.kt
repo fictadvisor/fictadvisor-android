@@ -14,7 +14,7 @@ import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.databinding.FragmentLoginBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil
-import com.fictadvisor.android.validator.LoginInputValidator
+import com.fictadvisor.android.validator.LoginViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +25,7 @@ class LoginFragment : Fragment() {
     private lateinit var binding: FragmentLoginBinding
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
-    private lateinit var inputValidator: LoginInputValidator
+    private lateinit var loginViewModel: LoginViewModel
     private lateinit var storageUtil: StorageUtil
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +39,6 @@ class LoginFragment : Fragment() {
     ): View? {
         binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
-        inputValidator = LoginInputValidator(requireContext())
         storageUtil = StorageUtil(requireContext())
 
         authViewModel = ViewModelProvider(
@@ -47,9 +46,11 @@ class LoginFragment : Fragment() {
             AuthViewModelFactory(authRepository)
         ).get(AuthViewModel::class.java)
 
+        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
         setLoginButtonListener()
         setPreviousButtonListener()
         setForgotPasswordTextListener()
+        initViewModelObservers()
         return view
     }
 
@@ -62,13 +63,8 @@ class LoginFragment : Fragment() {
         binding.buttonLogin.setOnClickListener {
             val username = binding.editTextLogin.text.toString()
             val password = binding.editTextPassword.text.toString()
-            if (inputValidator.isLoginDataValid(username)) {
+            if (loginViewModel.validateLoginData(username)) {
                 loginUser(username, password)
-                binding.editTextLoginLayout.error = null
-                binding.editTextPasswordLayout.error = null
-            } else {
-                binding.editTextLoginLayout.error = "giiiiirl, i m the problem"
-                binding.editTextPasswordLayout.error = "giiiiirl, i m the problem2"
             }
         }
     }
@@ -103,6 +99,8 @@ class LoginFragment : Fragment() {
             }
 
             is BaseResponse.Error -> {
+                binding.editTextPasswordLayout.error = "Невірний логін або пароль"
+                binding.editTextLoginLayout.error = "Невірний логін або пароль"
                 showErrorLog("Помилка входу: ${registerResponse.error?.message}")
             }
 
@@ -126,6 +124,12 @@ class LoginFragment : Fragment() {
 
     private fun showErrorLog(message: String) {
         Log.e("LoginFragment", message)
+    }
+
+    private fun initViewModelObservers() {
+        loginViewModel.loginErrorLiveData.observe(viewLifecycleOwner) { errorMessage ->
+            binding.editTextLoginLayout.error = errorMessage
+        }
     }
 
     companion object {

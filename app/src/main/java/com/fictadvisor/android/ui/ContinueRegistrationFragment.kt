@@ -1,5 +1,6 @@
 package com.fictadvisor.android.ui
 
+import RegistrationViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import com.fictadvisor.android.data.dto.*
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil
-import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -24,7 +24,7 @@ class ContinueRegistrationFragment : Fragment() {
     private lateinit var binding: FragmentContinueRegistrationBinding
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
-    private lateinit var inputValidator: RegistrationInputValidator
+    private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var storageUtil: StorageUtil
 
 
@@ -35,7 +35,7 @@ class ContinueRegistrationFragment : Fragment() {
         binding = FragmentContinueRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        inputValidator = RegistrationInputValidator(requireContext())
+        registrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
 
         storageUtil = StorageUtil(requireActivity())
 
@@ -46,6 +46,7 @@ class ContinueRegistrationFragment : Fragment() {
 
         setBackButtonListener()
         setRegisterButtonListener()
+        initViewModelObservers()
 
         return view
     }
@@ -111,11 +112,13 @@ class ContinueRegistrationFragment : Fragment() {
         val password = binding.editTextPassword.text.toString()
         val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
         val username = binding.editTextTextUsername.text.toString()
-        if(!inputValidator.isUserDataValid(email, password, passwordConfirm, username)){
-            return UserDTO("", "", "")
+
+        return if (!registrationViewModel.validateUserData(email, password, passwordConfirm, username)) {
+            UserDTO("", "", "")
         } else {
-              return UserDTO(username = username, email = email, password = password)
+            UserDTO(username = username, email = email, password = password)
         }
+
     }
 
     private fun handleIsRegisteredResponse(
@@ -183,4 +186,22 @@ class ContinueRegistrationFragment : Fragment() {
         Log.e("ContinueRegistrationFragment", message)
     }
 
+
+    private fun initViewModelObservers() {
+        registrationViewModel.emailErrorLiveData.observe(viewLifecycleOwner) { emailError ->
+            binding.editTextTextEmailLayout.error = emailError
+        }
+
+        registrationViewModel.passwordErrorLiveData.observe(viewLifecycleOwner) { passwordError ->
+            binding.editTextPasswordLayout.error = passwordError
+        }
+
+        registrationViewModel.passwordConfirmErrorLiveData.observe(viewLifecycleOwner) { passwordConfirmError ->
+            binding.editTextTextConfirmPassLayout.error = passwordConfirmError
+        }
+
+        registrationViewModel.usernameErrorLiveData.observe(viewLifecycleOwner) { usernameError ->
+            binding.editTextTextUsernameLayout.error = usernameError
+        }
+    }
 }

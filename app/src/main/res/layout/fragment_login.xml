@@ -91,6 +91,7 @@
             android:id="@+id/editText_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
 
             android:hint="@string/EmailOrUsername"
             />
@@ -113,23 +114,25 @@
             android:id="@+id/editText_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
 
             android:hint="@string/password"
             />
     </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-            android:id="@+id/textView_ForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="32dp"
-            android:text="Забули пароль?"
-            android:clickable="true"
-            android:focusable="true"
+        android:id="@+id/textView_ForgotPassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:minHeight="48dp"
+        android:text="@string/forgetpassword"
         android:textColor="#54ADF4"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editText_password_layout"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editText_password_layout" />
 
     <Button
         android:id="@+id/button_login"

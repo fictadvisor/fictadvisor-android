@@ -52,7 +52,8 @@
             android:id="@+id/editTextText_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:maxLines="1"
+            android:maxLength="40"
             android:hint="@string/username"
             />
     </com.google.android.material.textfield.TextInputLayout>
@@ -72,6 +73,7 @@
             android:id="@+id/editTextText_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
 
             android:hint="@string/email"
             android:inputType="textEmailAddress"
@@ -92,7 +94,7 @@
             android:id="@+id/editTextPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:maxLines="1"
             android:hint="@string/password"
             android:inputType="textEmailAddress"
             />
@@ -112,7 +114,7 @@
             android:id="@+id/editTextText_confirmPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:maxLines="1"
             android:hint="@string/confirmpassword"
             android:inputType="textEmailAddress"
             />

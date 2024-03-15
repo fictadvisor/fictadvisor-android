@@ -14,13 +14,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="16dp"
         android:fontFamily="@font/manrope"
         android:text="@string/Iamcaptain"
         android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout"
-        app:layout_constraintStart_toEndOf="@+id/groupACTV_layout"/>
+        app:layout_constraintEnd_toEndOf="@+id/editTextText_lastname_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout" />
 
     <ImageView
         android:id="@+id/imageView_logo"
@@ -59,15 +57,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView3"
-        style="@style/EditText_Transparent">
+        style="@style/EditText_Transparent"
+        >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextText_lastname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
-            android:hint="@string/surname"
-            />
+            android:maxLines="1"
+            android:hint="@string/surname" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -85,6 +83,7 @@
             android:id="@+id/editTextText_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
 
             android:hint="@string/name"
             />
@@ -93,42 +92,40 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/editTextText_fathername_layout"
+        style="@style/EditText_Transparent"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginTop="16dp"
 
+        android:layout_marginRight="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/editTextText_name_layout"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_name_layout"
-        style="@style/EditText_Transparent">
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_name_layout">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/editTextText_fathername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:maxLines="1"
 
-            android:hint="@string/fatherName"
-            />
+            android:hint="@string/fatherName" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/groupACTV_layout"
+        style="@style/EditText_Transparent_AutoComplete"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox_captain"
         android:minWidth="212dp"
-        style="@style/EditText_Transparent_AutoComplete">
+        app:layout_constraintStart_toStartOf="@+id/editTextText_lastname_layout"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText_fathername_layout">
 
         <androidx.appcompat.widget.AppCompatAutoCompleteTextView
             android:id="@+id/groupACTV"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/group"
-            android:completionThreshold="1" />
+            android:completionThreshold="1"
+            android:hint="@string/group" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -168,10 +165,13 @@
         android:id="@+id/imageView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="42dp"
         android:layout_marginTop="25dp"
+        android:layout_marginEnd="42dp"
         android:src="@drawable/ic_divider"
-        app:layout_constraintTop_toBottomOf="@+id/button_addTelegram"
-        tools:layout_editor_absoluteX="41dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button_addTelegram" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
