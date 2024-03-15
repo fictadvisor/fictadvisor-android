@@ -231,9 +231,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun getStudent() {
+    fun getStudent(token: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getStudent()
+            val response = mainRepository.getStudent(token)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     authOrdinaryStudentResponseMutable.postValue(BaseResponse.Success(response.body()))

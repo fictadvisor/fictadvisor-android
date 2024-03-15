@@ -3,12 +3,7 @@ package com.fictadvisor.android.data.remote.api
 import com.fictadvisor.android.data.dto.*
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
-import retrofit2.http.Query
+import retrofit2.http.*
 
 interface AuthApi {
 
@@ -43,7 +38,7 @@ interface AuthApi {
     suspend fun resetPassword(@Path("token") token: String, @Body resetPasswordRequest: ResetPasswordDTO): Response<AuthLoginResponse>
 
     @GET("/v2/auth/me")
-    suspend fun getStudent(): Response<OrdinaryStudentResponse>
+    suspend fun getStudent(@Header("Authorization") token: String): Response<OrdinaryStudentResponse>
 
     @GET("/v2/auth/verifyIsRegistered")
     suspend fun verifyIsRegistered(@Query("username") username: String?, @Query("email") email: String?): Response<Boolean>

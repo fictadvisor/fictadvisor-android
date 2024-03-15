@@ -49,7 +49,7 @@ class AuthRepository() {
         ),
     )
 
-    suspend fun getStudent() = authService.getStudent()
+    suspend fun getStudent(token: String) = authService.getStudent("Bearer $token")
 
     suspend fun verifyIsRegistered(username: String?, email: String?) = authService.verifyIsRegistered(username, email)
 

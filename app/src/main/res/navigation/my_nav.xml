@@ -16,6 +16,7 @@
         <action
             android:id="@+id/action_welcomeFragment_to_loginFragment"
             app:destination="@id/loginFragment" />
+        <action android:id="@+id/action_welcomeFragment_to_scheduleFragment" app:destination="@id/scheduleFragment"/>
     </fragment>
 
     <fragment
@@ -103,7 +104,10 @@
         android:id="@+id/scheduleFragment"
         android:name="com.fictadvisor.android.ui.ScheduleFragment"
         android:label="fragment_schedule"
-        tools:layout="@layout/fragment_schedule" />
+        tools:layout="@layout/fragment_schedule" >
+        <action android:id="@+id/action_scheduleFragment_to_studentProfileFragment"
+                app:destination="@id/studentProfileFragment"/>
+    </fragment>
 
     <fragment
         android:id="@+id/forgotPasswordFragment"
@@ -127,6 +131,13 @@
             android:id="@+id/deepLinkResetPassword"
             app:uri="https://dev.fictadvisor.com/password-recovery/{token}"/>
         <action android:id="@+id/action_resetPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+    </fragment>
+
+    <fragment
+            android:id="@+id/studentProfileFragment"
+            android:name="com.fictadvisor.android.ui.StudentProfileFragment"
+            android:label="fragment_student_profile"
+            tools:layout="@layout/fragment_student_profile" >
     </fragment>
 
 </navigation>
