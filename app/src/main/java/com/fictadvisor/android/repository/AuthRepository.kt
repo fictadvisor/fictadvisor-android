@@ -35,7 +35,8 @@ class AuthRepository() {
 
     suspend fun verifyEmailToken(token: String) = authService.verifyEmailToken(token)
 
-    suspend fun updatePassword(oldPassword: String, newPassword: String) = authService.updatePassword(
+    suspend fun updatePassword(token: String, oldPassword: String, newPassword: String) = authService.updatePassword(
+        "Bearer $token",
         UpdatePasswordDTO(
             oldPassword,
             newPassword,

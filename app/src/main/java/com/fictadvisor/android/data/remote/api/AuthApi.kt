@@ -32,7 +32,7 @@ interface AuthApi {
     suspend fun verifyEmailToken(@Path("token") token: String): Response<AuthLoginResponse>
 
     @PUT("/v2/auth/updatePassword")
-    suspend fun updatePassword(@Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>
+    suspend fun updatePassword(@Header("Authorization") token: String, @Body updatePasswordRequest: UpdatePasswordDTO): Response<AuthLoginResponse>
 
     @POST("/v2/auth/resetPassword/{token}")
     suspend fun resetPassword(@Path("token") token: String, @Body resetPasswordRequest: ResetPasswordDTO): Response<AuthLoginResponse>
