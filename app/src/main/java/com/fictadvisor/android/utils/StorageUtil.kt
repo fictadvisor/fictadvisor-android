@@ -53,18 +53,18 @@ class StorageUtil(private val context: Context) {
 
     fun getOrdinaryStudentInfo(): OrdinaryStudentResponse? {
         val prefs = context.getSharedPreferences(prefName, Context.MODE_PRIVATE)
-        val studentFirstName = prefs.getString(StorageKeys.STUDENT_FIRST_NAME.name, null)
-        val studentMiddleName = prefs.getString(StorageKeys.STUDENT_MIDDLE_NAME.name, null)
-        val studentLastName = prefs.getString(StorageKeys.STUDENT_LAST_NAME.name, null)
-        val studentId = prefs.getString(StorageKeys.STUDENT_ID.name, null)
-        val studentUsername = prefs.getString(StorageKeys.STUDENT_USERNAME.name, null)
-        val studentEmail = prefs.getString(StorageKeys.STUDENT_EMAIL.name, null)
-        val studentAvatar = prefs.getString(StorageKeys.STUDENT_AVATAR.name, null)
-        val studentTelegramId = prefs.getLong(StorageKeys.STUDENT_TELEGRAM_ID.name, 0)
-        val studentGroupId = prefs.getString(StorageKeys.STUDENT_GROUP_ID.name, null)
-        val studentGroupCode = prefs.getString(StorageKeys.STUDENT_GROUP_CODE.name, null)
-        val studentGroupState = prefs.getString(StorageKeys.STUDENT_GROUP_STATE.name, null)
-        val studentGroupRole = prefs.getString(StorageKeys.STUDENT_GROUP_ROLE.name, null)
+        val studentFirstName = prefs.getString(StorageKeys.STUDENT_FIRST_NAME.name, null) ?: "No first name found"
+        val studentMiddleName = prefs.getString(StorageKeys.STUDENT_MIDDLE_NAME.name, null) ?: "No middle name found"
+        val studentLastName = prefs?.getString(StorageKeys.STUDENT_LAST_NAME.name, null) ?: "No last name found"
+        val studentId = prefs?.getString(StorageKeys.STUDENT_ID.name, null) ?: "No id found"
+        val studentUsername = prefs.getString(StorageKeys.STUDENT_USERNAME.name, null) ?: "No username found"
+        val studentEmail = prefs.getString(StorageKeys.STUDENT_EMAIL.name, null) ?: "No email found"
+        val studentAvatar = prefs.getString(StorageKeys.STUDENT_AVATAR.name, null) ?: "No avatar found"
+        val studentTelegramId = prefs.getLong(StorageKeys.STUDENT_TELEGRAM_ID.name, 0) ?: 0
+        val studentGroupId = prefs.getString(StorageKeys.STUDENT_GROUP_ID.name, null) ?: "No group id found"
+        val studentGroupCode = prefs.getString(StorageKeys.STUDENT_GROUP_CODE.name, null) ?: "No group code found"
+        val studentGroupState = prefs.getString(StorageKeys.STUDENT_GROUP_STATE.name, null) ?: "No group state found"
+        val studentGroupRole = prefs.getString(StorageKeys.STUDENT_GROUP_ROLE.name, null) ?: "No group role found"
         val list = listOf(
             studentFirstName,
             studentMiddleName,
@@ -73,6 +73,7 @@ class StorageUtil(private val context: Context) {
             studentUsername,
             studentEmail,
             studentAvatar,
+            studentTelegramId,
             studentGroupId,
             studentGroupCode,
             studentGroupState,
@@ -97,12 +98,36 @@ class StorageUtil(private val context: Context) {
         }
     }
 
+    fun deleteOrdinaryStudentInfo() {
+        context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().apply {
+            remove(StorageKeys.STUDENT_FIRST_NAME.name)
+            remove(StorageKeys.STUDENT_MIDDLE_NAME.name)
+            remove(StorageKeys.STUDENT_LAST_NAME.name)
+            remove(StorageKeys.STUDENT_ID.name)
+            remove(StorageKeys.STUDENT_USERNAME.name)
+            remove(StorageKeys.STUDENT_EMAIL.name)
+            remove(StorageKeys.STUDENT_AVATAR.name)
+            remove(StorageKeys.STUDENT_TELEGRAM_ID.name)
+            remove(StorageKeys.STUDENT_GROUP_ID.name)
+            remove(StorageKeys.STUDENT_GROUP_CODE.name)
+            remove(StorageKeys.STUDENT_GROUP_STATE.name)
+            remove(StorageKeys.STUDENT_GROUP_ROLE.name)
+            apply()
+        }
+    }
+
     fun deleteTokens() {
         context.getSharedPreferences(prefName, Context.MODE_PRIVATE).edit().apply {
             remove(StorageKeys.ACCESS_TOKEN.name)
             remove(StorageKeys.REFRESH_TOKEN.name)
             apply()
         }
+    }
+
+    fun clearAll () {
+        deleteOrdinaryStudentInfo()
+        deleteTokens()
+        deleteTelegramInfo()
     }
 
     fun setTelegramInfo(data: TelegramDTO) {

@@ -43,6 +43,7 @@ class LoginFragment : Fragment() {
         inputValidator = LoginInputValidator(requireContext())
         storageUtil = StorageUtil(requireContext())
 
+
         authViewModel = ViewModelProvider(
             this,
             AuthViewModelFactory(authRepository)
@@ -66,9 +67,8 @@ class LoginFragment : Fragment() {
             val password = binding.editTextPassword.text.toString()
             if (inputValidator.isLoginDataValid(username)) {
                 loginUser(username, password)
-                val token = storageUtil.getTokens()?.accessToken
-                if (token != null) {
-                    getStudentInfo(token)
+                if (storageUtil.getTokens()?.accessToken != null) {
+                    getStudentInfo(storageUtil.getTokens()?.accessToken!!)
                 }
             }
         }
@@ -94,19 +94,6 @@ class LoginFragment : Fragment() {
 
     }
 
-    private fun getStudentInfo(token: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            authViewModel.getStudent(token)
-        }
-
-        authViewModel.authOrdinaryStudentResponse.observe(viewLifecycleOwner) { studentInfoResponse ->
-            studentInfoResponse?.let {
-                handleStudentInfoResponse(studentInfoResponse)
-            }
-        }
-    }
-
-
     private fun handleLoginResponse(registerResponse: BaseResponse<AuthLoginResponse>) {
         when (registerResponse) {
             is BaseResponse.Success -> {
@@ -122,6 +109,25 @@ class LoginFragment : Fragment() {
 
             is BaseResponse.Loading -> {
                 // Loading, if needed
+            }
+        }
+    }
+    private fun saveRefreshAndAccessTokens(response: BaseResponse.Success<AuthLoginResponse>) {
+        val responseData = response.data!!
+        val accessToken = responseData.accessToken
+        val refreshToken = responseData.refreshToken
+        storageUtil.setTokens(accessToken, refreshToken)
+        Log.d("LoginFragment", "Access token: ${storageUtil.getTokens()?.accessToken}")
+    }
+
+    private fun getStudentInfo(token: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            authViewModel.getStudent(token)
+        }
+
+        authViewModel.authOrdinaryStudentResponse.observe(viewLifecycleOwner) { studentInfoResponse ->
+            studentInfoResponse?.let {
+                handleStudentInfoResponse(studentInfoResponse)
             }
         }
     }
@@ -148,14 +154,6 @@ class LoginFragment : Fragment() {
         storageUtil.setOrdinaryStudentInfo(responseData)
         Log.d("LoginFragment", "Student info: ${storageUtil.getOrdinaryStudentInfo()}")
 
-    }
-
-    private fun saveRefreshAndAccessTokens(response: BaseResponse.Success<AuthLoginResponse>) {
-        val responseData = response.data!!
-        val accessToken = responseData.accessToken
-        val refreshToken = responseData.refreshToken
-        storageUtil.setTokens(accessToken, refreshToken)
-        Log.d("LoginFragment", "Access token: ${storageUtil.getTokens()?.accessToken}")
     }
 
     private fun showSuccessLog(message: String) {
