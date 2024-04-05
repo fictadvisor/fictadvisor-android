@@ -1,10 +1,8 @@
 package com.fictadvisor.android
 
-import com.fictadvisor.android.data.dto.schedule.PatchEventDTO
 import com.fictadvisor.android.data.dto.schedule.PostEventDTO
 import com.fictadvisor.android.data.dto.schedule.TDiscipline
 import com.fictadvisor.android.data.dto.schedule.TEventPeriod
-import com.fictadvisor.android.data.dto.schedule.Teacher
 import com.fictadvisor.android.data.remote.api.ScheduleApi
 import kotlinx.coroutines.test.runTest
 import okhttp3.Interceptor
@@ -20,6 +18,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+// TODO: idk if we even need all these tests 'cause they just check JSON deserialization
 class ScheduleApiTest {
     private val server = MockWebServer()
     private lateinit var scheduleApi: ScheduleApi
@@ -66,7 +65,7 @@ class ScheduleApiTest {
     }
 
     @Test
-    fun `deleteEventVyId should return the deleted event`() = runTest {
+    fun `deleteEventById should return the deleted event`() = runTest {
         // Prepare a sample response JSON representing an event
         val responseJson = """
             {
@@ -93,7 +92,7 @@ class ScheduleApiTest {
 
         server.enqueue(MockResponse().setBody(responseJson))
 
-        val response = scheduleApi.deleteEventById("some-group-id", "some-event-id")
+        val response = scheduleApi.deleteEventById("some-token", "some-group-id", "some-event-id")
 
         assertTrue(response.isSuccessful)
 
@@ -178,7 +177,7 @@ class ScheduleApiTest {
 
         server.enqueue(MockResponse().setBody(responseJson))
 
-        val response = scheduleApi.getEventInfo("id", 1)
+        val response = scheduleApi.getEventInfo("some-token", "id", 1)
 
         assertTrue(response.isSuccessful)
 
@@ -217,7 +216,7 @@ class ScheduleApiTest {
 
         server.enqueue(MockResponse().setBody(responseJson))
 
-        val response = scheduleApi.getEventsAuthorized("group_id", 1, true)
+        val response = scheduleApi.getEventsAuthorized("some-token", "group_id", 1, true)
 
         assertTrue(response.isSuccessful)
 
@@ -239,13 +238,16 @@ class ScheduleApiTest {
     fun `addEvent should return the added event`() = runTest {
         val testPostEventDTO = PostEventDTO(
             groupId = "some-group-id",
+            name = "Some event",
             teachers = listOf("some-teacher-id"),
             disciplineId = "some-discipline-id",
             url = "https://example.com",
             eventInfo = "This is a test event",
             eventType = TDiscipline.LECTURE,
             disciplineInfo = "Some discipline",
-            period = TEventPeriod.NO_PERIOD
+            period = TEventPeriod.NO_PERIOD,
+            startTime = "2024-03-08T13:47:59.823Z",
+            endTime = "2024-03-08T13:48:00.823Z"
         )
 
         // Prepare a sample response JSON representing an event
@@ -274,7 +276,7 @@ class ScheduleApiTest {
 
         server.enqueue(MockResponse().setBody(responseJson))
 
-        val response = scheduleApi.addEvent(testPostEventDTO, "some-group-id")
+        val response = scheduleApi.addEvent("some-token", testPostEventDTO, "some-group-id")
 
         assertTrue(response.isSuccessful)
 
@@ -294,11 +296,10 @@ class ScheduleApiTest {
         assertEquals("Davis", teacher.lastName)
     }
 
-    // TODO: test for editEvent() after discussing DTO
-    // @Test
-    // fun `editEvent should return the edited event`() = runTest {
-    //
-    // }
+//     @Test
+//     fun `editEvent should return the edited event`() = runTest {
+//
+//     }
 
 
     companion object {

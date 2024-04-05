@@ -14,24 +14,24 @@ class ScheduleRepository {
         return scheduleService.getEvents(groupId, week)
     }
 
-    suspend fun getEventsAuthorized(groupId: String, week: Int, showOwnSelective: Boolean): Response<GetEventResponse> {
-        return scheduleService.getEventsAuthorized(groupId, week, showOwnSelective)
+    suspend fun getEventsAuthorized(token: String, groupId: String, week: Int, showOwnSelective: Boolean): Response<GetEventResponse> {
+        return scheduleService.getEventsAuthorized(token, groupId, week, showOwnSelective)
     }
 
-    suspend fun getEventInfo(eventId: String, week: Any): Response<DetailedEventResponse> {
-        return scheduleService.getEventInfo(eventId, week)
+    suspend fun getEventInfo(token: String, eventId: String, week: Any): Response<DetailedEventResponse> {
+        return scheduleService.getEventInfo(token, eventId, week)
     }
 
-    suspend fun deleteEventById(groupId: String, eventId: String): Response<DetailedEventResponse> {
-        return scheduleService.deleteEventById(groupId, eventId)
+    suspend fun deleteEventById(token: String, groupId: String, eventId: String): Response<DetailedEventResponse> {
+        return scheduleService.deleteEventById(token, groupId, eventId)
     }
 
-    suspend fun addEvent(body: PostEventDTO, groupId: String): Response<DetailedEventResponse> {
-        return scheduleService.addEvent(body, groupId)
+    suspend fun addEvent(token: String, body: PostEventDTO, groupId: String): Response<DetailedEventResponse> {
+        return scheduleService.addEvent(token, body, groupId)
     }
 
-    suspend fun editEvent(body: PatchEventDTO, groupId: String, eventId: String): Response<DetailedEventResponse> {
-        return scheduleService.editEvent(body, groupId, eventId)
+    suspend fun editEvent(token: String, body: PatchEventDTO, groupId: String, eventId: String): Response<DetailedEventResponse> {
+        return scheduleService.editEvent(token, body, groupId, eventId)
     }
 }
 
