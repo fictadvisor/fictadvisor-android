@@ -4,6 +4,7 @@ import com.fictadvisor.android.data.dto.TelegramDTO
 import com.fictadvisor.android.data.dto.user.AddContactBody
 import com.fictadvisor.android.data.dto.user.ChangeAvatarResponse
 import com.fictadvisor.android.data.dto.user.ChangeInfoBody
+import com.fictadvisor.android.data.dto.user.UserDTOResponse
 import com.fictadvisor.android.data.dto.user.ChangeRoleBody
 import com.fictadvisor.android.data.dto.user.ChangeUserBody
 import com.fictadvisor.android.data.dto.user.Contact
@@ -15,6 +16,7 @@ import com.fictadvisor.android.data.dto.user.PostSelectiveDisciplinesBody
 import com.fictadvisor.android.data.dto.user.RequestNewGroupBody
 import com.fictadvisor.android.data.dto.user.SimplifiedUser
 import com.fictadvisor.android.data.dto.user.VerifyStudentBody
+import com.fictadvisor.android.data.dto.user.VerifyStudentResponse
 import okhttp3.MultipartBody
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -48,14 +50,14 @@ interface UserApi {
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
         @Body body: ChangeInfoBody
-    ) // TODO: response type for changeInfo()
+    ): Response<UserDTOResponse>
 
     @POST("/v2/users/{userId}/telegram")
     suspend fun linkTelegram(
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
         @Body body: TelegramDTO
-    ) // TODO: response type for linkTelegram()
+    ): Response<UserDTOResponse>
 
     @POST("/v2/users/{userId}/contacts")
     suspend fun addContact(
@@ -131,5 +133,5 @@ interface UserApi {
         @Header("Authorization") token: String,
         @Path("userId") userId: String,
         @Body body: VerifyStudentBody
-    ) // TODO: response type for verifyStudent()
+    ): Response<VerifyStudentResponse>
 }
