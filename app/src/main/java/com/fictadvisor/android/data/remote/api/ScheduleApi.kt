@@ -8,6 +8,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -25,6 +26,7 @@ interface ScheduleApi {
 
     @GET("/v2/schedule/groups/{groupId}/events")
     suspend fun getEventsAuthorized(
+        @Header("Authorization") token: String,
         @Path("groupId") groupId: String,
         @Query("week") week: Int,
         @Query("showOwnSelective") showOwnSelective: Boolean,
@@ -36,24 +38,28 @@ interface ScheduleApi {
 
     @GET("/v2/schedule/events/{eventId}")
     suspend fun getEventInfo(
+        @Header("Authorization") token: String,
         @Path("eventId") eventId: String,
         @Query("week") week: Any // You can define the type accordingly
     ): Response<DetailedEventResponse>
 
     @DELETE("/v2/schedule/groups/{groupId}/events/{eventId}")
     suspend fun deleteEventById(
+        @Header("Authorization") token: String,
         @Path("groupId") groupId: String,
         @Path("eventId") eventId: String
     ): Response<DetailedEventResponse>
 
     @POST("/v2/schedule/events")
     suspend fun addEvent(
+        @Header("Authorization") token: String,
         @Body body: PostEventDTO,
         @Query("groupId") groupId: String
     ): Response<DetailedEventResponse>
 
     @PATCH("/v2/schedule/groups/{groupId}/events/{eventId}")
     suspend fun editEvent(
+        @Header("Authorization") token: String,
         @Body body: PatchEventDTO,
         @Path("groupId") groupId: String,
         @Path("eventId") eventId: String
