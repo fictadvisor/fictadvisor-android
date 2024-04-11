@@ -63,9 +63,9 @@ class ScheduleViewModel(private val mainRepository: ScheduleRepository) : ViewMo
         }
     }
 
-    fun getEventsAuthorized(groupId: String, week: Int, showOwnSelective: Boolean){
+    fun getEventsAuthorized(token: String, groupId: String, week: Int, showOwnSelective: Boolean){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getEventsAuthorized(groupId, week, showOwnSelective)
+            val response = mainRepository.getEventsAuthorized(token, groupId, week, showOwnSelective)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     getEventsAuthorizedResponseMutable.postValue(BaseResponse.Success(response.body()))
@@ -80,9 +80,9 @@ class ScheduleViewModel(private val mainRepository: ScheduleRepository) : ViewMo
         }
     }
 
-    fun getEventInfo(eventId: String, week: Any){
+    fun getEventInfo(token: String, eventId: String, week: Any){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getEventInfo(eventId, week)
+            val response = mainRepository.getEventInfo(token, eventId, week)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     getEventInfoResponseMutable.postValue(BaseResponse.Success(response.body()))
@@ -97,9 +97,9 @@ class ScheduleViewModel(private val mainRepository: ScheduleRepository) : ViewMo
         }
     }
 
-    fun deleteEventById(groupId: String, eventId: String){
+    fun deleteEventById(token: String, groupId: String, eventId: String){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.deleteEventById(groupId, eventId)
+            val response = mainRepository.deleteEventById(token, groupId, eventId)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     deleteEventByIdResponseMutable.postValue(BaseResponse.Success(response.body()))
@@ -114,9 +114,9 @@ class ScheduleViewModel(private val mainRepository: ScheduleRepository) : ViewMo
         }
     }
 
-    fun addEvent(body: PostEventDTO, groupId: String){
+    fun addEvent(token: String, body: PostEventDTO, groupId: String){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.addEvent(body, groupId)
+            val response = mainRepository.addEvent(token, body, groupId)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     addEventResponseMutable.postValue(BaseResponse.Success(response.body()))
@@ -131,9 +131,9 @@ class ScheduleViewModel(private val mainRepository: ScheduleRepository) : ViewMo
         }
     }
 
-    fun editEvent(body: PatchEventDTO, groupId: String, eventId: String){
+    fun editEvent(token: String, body: PatchEventDTO, groupId: String, eventId: String){
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.editEvent(body, groupId, eventId)
+            val response = mainRepository.editEvent(token, body, groupId, eventId)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     editEventResponseMutable.postValue(BaseResponse.Success(response.body()))
