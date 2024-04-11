@@ -2,7 +2,6 @@ package com.fictadvisor.android
 
 import com.fictadvisor.android.data.dto.ForgotPasswordDTO
 import com.fictadvisor.android.data.dto.LoginRequest
-import com.fictadvisor.android.data.dto.OrdinaryStudentResponse
 import com.fictadvisor.android.data.dto.RegisterTelegramDTO
 import com.fictadvisor.android.data.dto.RegistrationDTO
 import com.fictadvisor.android.data.dto.ResetPasswordDTO
@@ -10,7 +9,6 @@ import com.fictadvisor.android.data.dto.TelegramDTO
 import com.fictadvisor.android.data.dto.UpdatePasswordDTO
 import com.fictadvisor.android.data.dto.VerificationEmailDTO
 import com.fictadvisor.android.data.remote.api.AuthApi
-import com.google.gson.Gson
 import kotlinx.coroutines.test.runTest
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -198,8 +196,10 @@ class AuthApiTest {
             """{"accessToken": "some_access_token", "refreshToken": "some_refresh_token"}"""
         server.enqueue(MockResponse().setBody(responseJson))
 
+        val token = "some_token"
+
         val updatePasswordRequest = mock(UpdatePasswordDTO::class.java)
-        val response = authApi.updatePassword(updatePasswordRequest)
+        val response = authApi.updatePassword(token, updatePasswordRequest)
 
         assertTrue(response.isSuccessful)
         val authResponse = response.body()
@@ -310,7 +310,8 @@ class AuthApiTest {
 
         server.enqueue(MockResponse().setBody(responseJson))
 
-        val response = authApi.getStudent()
+        val token = "some_token"
+        val response = authApi.getStudent(token)
 
         assertTrue(response.isSuccessful)
 
