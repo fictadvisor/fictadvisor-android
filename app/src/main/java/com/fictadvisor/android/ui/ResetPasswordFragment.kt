@@ -45,10 +45,16 @@ class ResetPasswordFragment : Fragment() {
         ).get(AuthViewModel::class.java)
 
         setChangePasswordButtonListener()
+        setPreviousButtonListener()
 
         return view
     }
 
+    private fun setPreviousButtonListener() {
+        binding.buttonPrevious.setOnClickListener {
+            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
+        }
+    }
     private fun setChangePasswordButtonListener() {
         binding.buttonChangePassword.setOnClickListener {
             if (binding.editTextNewPassword.text.toString() != binding.editTextConfirmPassword.text.toString()) {
