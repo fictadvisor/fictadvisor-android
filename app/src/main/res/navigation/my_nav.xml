@@ -110,7 +110,9 @@
         android:name="com.fictadvisor.android.ui.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
         tools:layout="@layout/fragment_forgot_password" >
-        <action android:id="@+id/action_forgotPasswordFragment_to_loginFragment" app:destination="@id/loginFragment"/>
+        <action
+            android:id="@+id/action_forgotPasswordFragment_to_verifyEmailFragment"
+            app:destination="@id/verifyEmailFragment" />
     </fragment>
 
     <fragment

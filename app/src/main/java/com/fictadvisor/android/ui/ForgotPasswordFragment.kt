@@ -81,7 +81,7 @@ class ForgotPasswordFragment : Fragment() {
             is BaseResponse.Success -> {
                 val message = response.data.toString()
                 showSuccessLog("Лист надіслано: $message")
-                val action = ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToLoginFragment()
+                val action = ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyEmailFragment()
                 Navigation.findNavController(requireView()).navigate(action)
             }
             is BaseResponse.Error -> {
