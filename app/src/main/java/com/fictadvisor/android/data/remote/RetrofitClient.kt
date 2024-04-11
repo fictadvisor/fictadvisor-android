@@ -3,6 +3,7 @@ package com.fictadvisor.android.data.remote
 import com.fictadvisor.android.data.remote.api.AuthApi
 import com.fictadvisor.android.data.remote.api.GroupApi
 import com.fictadvisor.android.data.remote.api.ScheduleApi
+import com.fictadvisor.android.data.remote.api.UserApi
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -71,6 +72,12 @@ object RetrofitClient {
         retrofitClient
             .build()
             .create(ScheduleApi::class.java)
+    }
+
+    val userApi: UserApi by lazy {
+        retrofitClient
+            .build()
+            .create(UserApi::class.java)
     }
 
 }
