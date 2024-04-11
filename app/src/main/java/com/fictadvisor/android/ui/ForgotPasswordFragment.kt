@@ -51,12 +51,13 @@ class ForgotPasswordFragment : Fragment() {
     }
 
     private fun setPreviousButtonListener() {
-        binding.buttonPrevious.setOnClickListener {
+        binding.textViewBack.setOnClickListener {
             view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
         }
     }
     private fun setSendButtonListener() {
         binding.buttonSend.setOnClickListener {
+            // get email from username
             val email = binding.editTextSendEmail.text.toString()
             if(inputValidator.isEmailValid(email).isValid){
                 sendRecoveryPasswordRequest(email)
@@ -80,7 +81,7 @@ class ForgotPasswordFragment : Fragment() {
             is BaseResponse.Success -> {
                 val message = response.data.toString()
                 showSuccessLog("Лист надіслано: $message")
-                val action = ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToLoginFragment()
+                val action = ForgotPasswordFragmentDirections.actionForgotPasswordFragmentToVerifyEmailFragment()
                 Navigation.findNavController(requireView()).navigate(action)
             }
             is BaseResponse.Error -> {

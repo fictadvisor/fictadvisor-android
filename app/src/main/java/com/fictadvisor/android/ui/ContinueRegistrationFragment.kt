@@ -1,11 +1,11 @@
 package com.fictadvisor.android.ui
 
+import RegistrationViewModel
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
@@ -13,7 +13,6 @@ import com.fictadvisor.android.data.dto.*
 import com.fictadvisor.android.databinding.FragmentContinueRegistrationBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil
-import com.fictadvisor.android.validator.RegistrationInputValidator
 import com.fictadvisor.android.viewmodel.AuthViewModel
 import com.fictadvisor.android.viewmodel.AuthViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -25,7 +24,7 @@ class ContinueRegistrationFragment : Fragment() {
     private lateinit var binding: FragmentContinueRegistrationBinding
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
-    private lateinit var inputValidator: RegistrationInputValidator
+    private lateinit var registrationViewModel: RegistrationViewModel
     private lateinit var storageUtil: StorageUtil
 
 
@@ -36,7 +35,7 @@ class ContinueRegistrationFragment : Fragment() {
         binding = FragmentContinueRegistrationBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        inputValidator = RegistrationInputValidator(requireContext())
+        registrationViewModel = ViewModelProvider(this).get(RegistrationViewModel::class.java)
 
         storageUtil = StorageUtil(requireActivity())
 
@@ -47,6 +46,8 @@ class ContinueRegistrationFragment : Fragment() {
 
         setBackButtonListener()
         setRegisterButtonListener()
+        initViewModelObservers()
+
         return view
     }
 
@@ -91,7 +92,7 @@ class ContinueRegistrationFragment : Fragment() {
             val name = arguments.getString("name")
             val middleName = arguments.getString("middleName")
             val lastname = arguments.getString("lastname")
-            val isCaptain = binding.checkBoxCaptain.isChecked
+            val isCaptain = arguments.getBoolean("isCaptain")
 
             if (name != null && lastname != null && middleName != null && group != null) {
                 return StudentDTO(
@@ -110,17 +111,14 @@ class ContinueRegistrationFragment : Fragment() {
         val email = binding.editTextTextEmail.text.toString()
         val password = binding.editTextPassword.text.toString()
         val passwordConfirm = binding.editTextTextConfirmPass.text.toString()
-        if(!inputValidator.isUserDataValid(email, password, passwordConfirm)){
-            return UserDTO("", "", "")
+        val username = binding.editTextTextUsername.text.toString()
+
+        return if (!registrationViewModel.validateUserData(email, password, passwordConfirm, username)) {
+            UserDTO("", "", "")
+        } else {
+            UserDTO(username = username, email = email, password = password)
         }
-        val arguments = arguments
-        if (arguments != null) {
-            val username = arguments.getString("username")
-            if (username != null) {
-                return UserDTO(username = username, email = email, password = password)
-            }
-        }
-        return UserDTO("", "", "")
+
     }
 
     private fun handleIsRegisteredResponse(
@@ -129,20 +127,8 @@ class ContinueRegistrationFragment : Fragment() {
         when (response) {
             is BaseResponse.Success -> {
                 if (response.data != true) {
-                    if (studentData.isCaptain) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            val group = studentData.groupId
-                            authViewModel.checkCaptain(group)
-                        }
-                        authViewModel.authCheckCaptainResponse.observe(viewLifecycleOwner) { captainResponse ->
-                            captainResponse?.let {
-                                handleCaptainCheckResponse(captainResponse)
-                            }
-                        }
-                    } else {
-                        registerUser(studentData, userData, telegramData)
-                    }
-                } else { // User is already registered
+                    registerUser(studentData, userData, telegramData)
+                } else {
                     showErrorLog("Користувач вже зареєстрований")
                 }
             }
@@ -157,21 +143,6 @@ class ContinueRegistrationFragment : Fragment() {
         }
     }
 
-    private fun handleCaptainCheckResponse(captainResponse: BaseResponse<Boolean>) {
-        when (captainResponse) {
-            is BaseResponse.Success -> {
-                Toast.makeText(requireContext(), "Староста для групи призначений", Toast.LENGTH_SHORT).show()
-            }
-
-            is BaseResponse.Error -> {
-                showErrorLog("Check captain error: ${captainResponse.error}")
-            }
-
-            is BaseResponse.Loading -> {
-                // Loading, if needed
-            }
-        }
-    }
     private fun registerUser(
         studentData: StudentDTO, userData: UserDTO, telegramData: TelegramDTO
     ) {
@@ -215,4 +186,22 @@ class ContinueRegistrationFragment : Fragment() {
         Log.e("ContinueRegistrationFragment", message)
     }
 
+
+    private fun initViewModelObservers() {
+        registrationViewModel.emailErrorLiveData.observe(viewLifecycleOwner) { emailError ->
+            binding.editTextTextEmailLayout.error = emailError
+        }
+
+        registrationViewModel.passwordErrorLiveData.observe(viewLifecycleOwner) { passwordError ->
+            binding.editTextPasswordLayout.error = passwordError
+        }
+
+        registrationViewModel.passwordConfirmErrorLiveData.observe(viewLifecycleOwner) { passwordConfirmError ->
+            binding.editTextTextConfirmPassLayout.error = passwordConfirmError
+        }
+
+        registrationViewModel.usernameErrorLiveData.observe(viewLifecycleOwner) { usernameError ->
+            binding.editTextTextUsernameLayout.error = usernameError
+        }
+    }
 }

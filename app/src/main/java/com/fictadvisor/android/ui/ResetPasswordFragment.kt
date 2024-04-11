@@ -26,6 +26,7 @@ class ResetPasswordFragment : Fragment() {
     private lateinit var authViewModel: AuthViewModel
     private val authRepository = AuthRepository()
     private val args: ResetPasswordFragmentArgs by navArgs()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -45,16 +46,12 @@ class ResetPasswordFragment : Fragment() {
         ).get(AuthViewModel::class.java)
 
         setChangePasswordButtonListener()
-        setPreviousButtonListener()
+        setBackTextViewListener()
+
 
         return view
     }
 
-    private fun setPreviousButtonListener() {
-        binding.buttonPrevious.setOnClickListener {
-            view?.let { it1 -> Navigation.findNavController(it1).navigateUp() }
-        }
-    }
     private fun setChangePasswordButtonListener() {
         binding.buttonChangePassword.setOnClickListener {
             if (binding.editTextNewPassword.text.toString() != binding.editTextConfirmPassword.text.toString()) {
@@ -79,6 +76,13 @@ class ResetPasswordFragment : Fragment() {
             response?.let {
                 handleRecoveryPasswordResponse(response)
             }
+        }
+    }
+
+    private fun setBackTextViewListener() {
+        binding.textViewBack.setOnClickListener {
+            val action = ResetPasswordFragmentDirections.actionResetPasswordFragmentToLoginFragment()
+            Navigation.findNavController(requireView()).navigate(action)
         }
     }
 
