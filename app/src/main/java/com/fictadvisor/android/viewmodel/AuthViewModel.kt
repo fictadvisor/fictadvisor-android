@@ -99,9 +99,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun updatePassword(oldPassword: String, newPassword: String) {
+    fun updatePassword(token: String, oldPassword: String, newPassword: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.updatePassword(oldPassword, newPassword)
+            val response = mainRepository.updatePassword(token, oldPassword, newPassword)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     authUpdatePasswordResponseMutable.postValue(BaseResponse.Success(response.body()))
@@ -231,9 +231,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun getStudent() {
+    fun getStudent(token: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.getStudent()
+            val response = mainRepository.getStudent(token)
             withContext(Dispatchers.Main) {
                 if (response.isSuccessful) {
                     authOrdinaryStudentResponseMutable.postValue(BaseResponse.Success(response.body()))

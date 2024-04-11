@@ -11,6 +11,7 @@ import androidx.navigation.Navigation
 import com.fictadvisor.android.R
 import com.fictadvisor.android.data.dto.AuthLoginResponse
 import com.fictadvisor.android.data.dto.BaseResponse
+import com.fictadvisor.android.data.dto.OrdinaryStudentResponse
 import com.fictadvisor.android.databinding.FragmentLoginBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.utils.StorageUtil
@@ -42,6 +43,7 @@ class LoginFragment : Fragment() {
         inputValidator = LoginInputValidator(requireContext())
         storageUtil = StorageUtil(requireContext())
 
+
         authViewModel = ViewModelProvider(
             this,
             AuthViewModelFactory(authRepository)
@@ -65,6 +67,9 @@ class LoginFragment : Fragment() {
             val password = binding.editTextPassword.text.toString()
             if (inputValidator.isLoginDataValid(username)) {
                 loginUser(username, password)
+                if (storageUtil.getTokens()?.accessToken != null) {
+                    getStudentInfo(storageUtil.getTokens()?.accessToken!!)
+                }
             }
         }
     }
@@ -107,13 +112,48 @@ class LoginFragment : Fragment() {
             }
         }
     }
-
     private fun saveRefreshAndAccessTokens(response: BaseResponse.Success<AuthLoginResponse>) {
         val responseData = response.data!!
         val accessToken = responseData.accessToken
         val refreshToken = responseData.refreshToken
         storageUtil.setTokens(accessToken, refreshToken)
         Log.d("LoginFragment", "Access token: ${storageUtil.getTokens()?.accessToken}")
+    }
+
+    private fun getStudentInfo(token: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            authViewModel.getStudent(token)
+        }
+
+        authViewModel.authOrdinaryStudentResponse.observe(viewLifecycleOwner) { studentInfoResponse ->
+            studentInfoResponse?.let {
+                handleStudentInfoResponse(studentInfoResponse)
+            }
+        }
+    }
+
+    private fun handleStudentInfoResponse(studentInfoResponse: BaseResponse<OrdinaryStudentResponse>) {
+        when (studentInfoResponse) {
+            is BaseResponse.Success -> {
+                showSuccessLog("Інформація про студента успішно отримана")
+                saveStudentInfo(studentInfoResponse)
+            }
+
+            is BaseResponse.Error -> {
+                showErrorLog("Помилка отримання інформації про студента: ${studentInfoResponse.error?.message}")
+            }
+
+            is BaseResponse.Loading -> {
+                // Loading, if needed
+            }
+        }
+    }
+
+    private fun saveStudentInfo(response: BaseResponse.Success<OrdinaryStudentResponse>) {
+        val responseData = response.data!!
+        storageUtil.setOrdinaryStudentInfo(responseData)
+        Log.d("LoginFragment", "Student info: ${storageUtil.getOrdinaryStudentInfo()}")
+
     }
 
     private fun showSuccessLog(message: String) {
