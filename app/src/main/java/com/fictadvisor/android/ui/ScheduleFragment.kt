@@ -17,12 +17,23 @@ import androidx.lifecycle.get
 import com.fictadvisor.android.R
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.schedule.EventDTO
+import com.fictadvisor.android.data.dto.schedule.GetEventResponse
 import com.fictadvisor.android.data.dto.schedule.TDiscipline
 import com.fictadvisor.android.databinding.FragmentScheduleBinding
 import com.fictadvisor.android.repository.ScheduleRepository
 import com.fictadvisor.android.utils.StorageUtil
 import com.fictadvisor.android.viewmodel.ScheduleViewModel
 import com.fictadvisor.android.viewmodel.ScheduleViewModelFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
+import java.util.Locale
 
 class ScheduleFragment : Fragment() {
     private lateinit var binding: FragmentScheduleBinding
@@ -32,32 +43,51 @@ class ScheduleFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        scheduleViewModel = ViewModelProvider(
+            this,
+            ScheduleViewModelFactory(scheduleRepository)
+        ).get(ScheduleViewModel::class.java)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            //обережено хард код:
+            scheduleViewModel.getEvents("2d6059e8-c625-4ce8-acf8-f865823f90d8", 11)
+            Log.d("yess", "1")
+        }
+
+        scheduleViewModel.getEventsResponse
+            .observe(viewLifecycleOwner) { eventResponse ->
+                eventResponse?.let {
+                    Log.d("yess", "2")
+                    handleScheduleResponse(eventResponse)
+                }
+            }
+
+
         binding = FragmentScheduleBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        scheduleViewModel = ViewModelProvider(
-            this,
-            ScheduleViewModelFactory(scheduleRepository))[ScheduleViewModel::class.java]
-
-        scheduleViewModel.getEventsResponse.observe(viewLifecycleOwner) { response ->
-            when (response) {
-                is BaseResponse.Success -> {
-                    val events = response.data?.events ?: emptyList()
-                    val week = response.data?.week
-
-                    drawUI(events)
-                }
-
-                is BaseResponse.Loading -> {}
-
-                is BaseResponse.Error -> {
-                    val error = response.error
-                }
-            }
-        }
-
         return view
     }
+
+    private fun handleScheduleResponse(response:  BaseResponse<GetEventResponse>) {
+        when (response) {
+            is BaseResponse.Success -> {
+                val events = response.data?.events ?: emptyList()
+                val week = response.data?.week
+                Log.d("yess", "3"+response.data?.week)
+
+
+                drawUI(events)
+            }
+
+            is BaseResponse.Error -> {
+            }
+
+            is BaseResponse.Loading -> {
+            }
+        }
+    }
+
 
     private fun drawUI(events: List<EventDTO>) {
         val timeColumn = binding.timeColumn
@@ -90,9 +120,16 @@ class ScheduleFragment : Fragment() {
             val cardView = layoutInflater.inflate(R.layout.card_view_template, null) as CardView
             cardView.id = View.generateViewId()
 
+            TODO("переписати, не працює")
+            var startTime = event.startTime
+            var endTime = event.endTime
+            val formatter2 = DateTimeFormatter.ofPattern("HH:mm")
+            val startTimeFormatted = startTime.format(formatter2)
+            val endTimeFormatted = endTime.format(formatter2)
+
             val layoutParams = ConstraintLayout.LayoutParams(
                 ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                dpToPx(calculateCardHeight(event.startTime, event.endTime))
+                dpToPx(calculateCardHeight(startTimeFormatted, endTimeFormatted))
             )
             cardView.layoutParams = layoutParams
 
