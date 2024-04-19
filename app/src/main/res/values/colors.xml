@@ -13,7 +13,9 @@
     <color name="lecture_main">#262B3A</color>
     <color name="practice_main">#442C24</color>
     <color name="lab_main">#263836</color>
+    <color name="other_main">#322032</color>
     <color name="lecture_side_on">#4E67BA</color>
     <color name="practice_side_on">#BB5A39</color>
     <color name="lab_side_on">#4CAC9D</color>
+    <color name="other_side_on">#984C98</color>
 </resources>
