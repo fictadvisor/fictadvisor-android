@@ -151,6 +151,9 @@
             tools:layout="@layout/fragment_student_profile" >
         <action android:id="@+id/action_studentProfileFragment_to_securityStudentProfileFragment"
                 app:destination="@id/securityStudentProfileFragment"/>
+        <action
+            android:id="@+id/action_studentProfileFragment_to_generalFragment"
+            app:destination="@id/generalFragment" />
     </fragment>
 
     <fragment
@@ -160,6 +163,15 @@
         tools:layout="@layout/fragment_security_student_profile">
         <action android:id="@+id/action_securityStudentProfileFragment_to_studentProfileFragment"
                 app:destination="@id/studentProfileFragment"/>
+    </fragment>
+    <fragment
+        android:id="@+id/generalFragment"
+        android:name="com.fictadvisor.android.ui.GeneralFragment"
+        android:label="fragment_general"
+        tools:layout="@layout/fragment_general" >
+        <action
+            android:id="@+id/action_generalFragment_to_studentProfileFragment"
+            app:destination="@id/studentProfileFragment" />
     </fragment>
 
 </navigation>
