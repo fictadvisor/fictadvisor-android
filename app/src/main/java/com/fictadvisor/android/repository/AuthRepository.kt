@@ -19,7 +19,7 @@ class AuthRepository() {
         ),
     )
 
-    suspend fun refresh() = authService.refresh()
+    suspend fun refresh(accessToken: String) = authService.refresh(accessToken)
 
     suspend fun forgotPassword(email: String) = authService.forgotPassword(
         ForgotPasswordDTO(

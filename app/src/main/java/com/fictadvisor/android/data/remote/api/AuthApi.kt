@@ -20,7 +20,7 @@ interface AuthApi {
     suspend fun register(@Body registrationRequest: RegistrationDTO) : Response<ResponseBody>
 
     @POST("/v2/auth/refresh")
-    suspend fun refresh(): Response<AuthRefreshResponse>
+    suspend fun refresh(@Header("Authorization") accessToken: String): Response<AuthRefreshResponse>
 
     @POST("/v2/auth/forgotPassword")
     suspend fun forgotPassword(@Body forgotPasswordRequest: ForgotPasswordDTO): Response<ResponseBody>

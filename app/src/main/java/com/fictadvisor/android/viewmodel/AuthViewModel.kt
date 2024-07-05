@@ -131,9 +131,9 @@ class AuthViewModel(private val mainRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun refresh() {
+    fun refresh(accessToken: String) {
         job = CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
-            val response = mainRepository.refresh()
+            val response = mainRepository.refresh(accessToken)
             withContext(mainDispatcher) {
                 if (response.isSuccessful) {
                     authRefreshResponseMutable.postValue(BaseResponse.Success(response.body()))
