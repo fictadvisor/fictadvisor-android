@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.Navigation
 import com.fictadvisor.android.R
@@ -50,13 +51,18 @@ class SecurityStudentProfileFragment : Fragment() {
             binding.buttonChangePassword.setOnClickListener {
                 val oldPassword = binding.editTextOldPassword.text.toString()
                 val newPassword = binding.editTextNewPassword.text.toString()
+                val confirmPassword = binding.editTextConfirmPassword.text.toString()
                 val token = storageUtil.getTokens()?.accessToken.toString()
+                if (newPassword != confirmPassword) {
+                    Toast.makeText(activity, "Паролі не співпадають", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 updatePassword(token, oldPassword, newPassword)
                 Navigation.findNavController(view).navigate(R.id.action_securityStudentProfileFragment_to_studentProfileFragment)
             }
         }
 
-        binding.buttonPrevious.setOnClickListener {
+        binding.imageViewBack.setOnClickListener {
             view.let { it1 -> Navigation.findNavController(it1).navigateUp() }
         }
 

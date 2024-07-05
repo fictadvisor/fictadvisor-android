@@ -86,6 +86,7 @@ class GeneralFragment : Fragment() {
 
         binding.buttonEdite.setOnClickListener {
             editUserData()
+            Log.i("Edit", "Edit")
         }
 
         return view
@@ -98,8 +99,8 @@ class GeneralFragment : Fragment() {
             val studentFirstName = binding.editTextTextName.text.toString()
             val studentMiddleName = binding.editTextTextFathername.text.toString()
             val studentLastName = binding.editTextTextLastname.text.toString()
-            val studentEmail = binding.editTextTextEmail.text.toString()
-            val studentUsername = binding.editTextTextUsername.text.toString()
+            val studentEmail = student.email
+            val studentUsername = student.username
             val studentState = student.group.state
             val studentGroupId = student.group.id
             val studentAvatar = student.avatar
