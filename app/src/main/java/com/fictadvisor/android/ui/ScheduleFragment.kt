@@ -19,12 +19,14 @@ import com.bumptech.glide.request.RequestOptions
 import com.fictadvisor.android.R
 import com.fictadvisor.android.data.dto.BaseResponse
 import com.fictadvisor.android.data.dto.OrdinaryStudentResponse
+import com.fictadvisor.android.data.dto.schedule.DetailedEventResponse
 import com.fictadvisor.android.data.dto.schedule.EventDTO
 import com.fictadvisor.android.data.dto.schedule.GetEventResponse
 import com.fictadvisor.android.data.dto.schedule.PatchEventDTO
 import com.fictadvisor.android.data.dto.schedule.PostEventDTO
 import com.fictadvisor.android.data.dto.schedule.TDiscipline
 import com.fictadvisor.android.data.dto.schedule.TEventPeriod
+import com.fictadvisor.android.data.dto.schedule.Teacher
 import com.fictadvisor.android.databinding.FragmentScheduleBinding
 import com.fictadvisor.android.repository.AuthRepository
 import com.fictadvisor.android.repository.ScheduleRepository
@@ -37,8 +39,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.TextStyle
 import java.util.Locale
 import java.util.TimeZone
 
@@ -83,7 +87,24 @@ class ScheduleFragment : Fragment() {
             ScheduleViewModelFactory(scheduleRepository)
         ).get(ScheduleViewModel::class.java)
 
-        testScheduleApiMethods()
+        // testScheduleApiMethods()
+
+        val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
+        CoroutineScope(Dispatchers.IO).launch {
+            scheduleViewModel.getEventsAuthorized(
+                token,
+                storageUtil.getOrdinaryStudentInfo()!!.group.id,
+                11,
+                false
+            )
+        }
+
+        scheduleViewModel.getEventsAuthorizedResponse
+            .observe(viewLifecycleOwner) { eventResponse ->
+                eventResponse?.let {
+                    handleScheduleResponse(eventResponse)
+                }
+            }
 
         return view
     }
@@ -266,16 +287,84 @@ class ScheduleFragment : Fragment() {
         }
     }
 
+    // works but wrong
+
+    private var listOfEvents = mutableListOf<EventDTO>()
+
     private fun handleScheduleResponse(response:  BaseResponse<GetEventResponse>) {
         when (response) {
             is BaseResponse.Success -> {
                 val events = response.data?.events ?: emptyList()
                 val week = response.data?.week
 
+                for (event in events) {
+                    var teachers: List<Teacher>
+                    var disciplineType: TDiscipline
+                    Log.d("yess", event.toString())
+
+                    val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
+                    CoroutineScope(Dispatchers.IO).launch {
+                        scheduleViewModel.getEventInfo(token, event.id, week!!.toInt())
+                        Log.d("yess", "3")
+                    }
+
+                    scheduleViewModel.getEventInfoResponse
+                        .observe(viewLifecycleOwner) { eventInfoResponse ->
+                            eventInfoResponse?.let {
+                                Log.d("yess", "4")
+                                handle(eventInfoResponse, event, week!!)
+                                Log.d("yess", event.toString())
+                            }
+                        }
+                }
+            }
+
+            is BaseResponse.Error -> {
+            }
+
+            is BaseResponse.Loading -> {
+            }
+        }
+    }
+
+    class EventInfo(
+        val name: String,
+        val teacher: List<Teacher>,
+        val startTime: String,
+        val endTime: String,
+        val type:  TDiscipline,
+    )
+
+    private fun handle(eventInfoResponse:  BaseResponse<DetailedEventResponse>, event: EventDTO, week: String) {
+        when (eventInfoResponse) {
+            is BaseResponse.Success -> {
+                Log.d("yess", "5")
+                Log.d("yess", eventInfoResponse.toString())
+
+                listOfEvents.add(event)
+                val teachers = eventInfoResponse.data?.teachers ?: emptyList()
+                val disciplineType = eventInfoResponse.data!!.eventType
+                val events = mutableListOf<EventInfo>()
+                if (getDate(event.startTime) == "2024-04-15") {
+                    Log.d("yess", event.toString())
+                    events.add(
+                        EventInfo(
+                            event.name,
+                            teachers,
+                            event.startTime,
+                            event.endTime,
+                            disciplineType
+                        )
+                    )
+                }
+                //Log.d("yess", events.toString())
+
                 drawUI(events, week)
             }
 
             is BaseResponse.Error -> {
+                Log.d("yess", "error")
+                Log.d("yess", eventInfoResponse.toString())
             }
 
             is BaseResponse.Loading -> {
@@ -295,7 +384,7 @@ class ScheduleFragment : Fragment() {
 
         Log.d("TimeSchedule", "string: $string")
         Log.d("TimeSchedule", "defaultTimezone: $defaultTimezone")
-        Log.d("TimeSchedule", "date: " + time)
+        Log.d("TimeSchedule", "date: $time")
 
         return time
     }
@@ -312,9 +401,8 @@ class ScheduleFragment : Fragment() {
         return newDate
     }
 
-    private fun drawUI(events: List<EventDTO>, week: String?) {
+    private fun drawUI(events: List<EventInfo>, week: String?) {
         val timeColumn = binding.timeColumn
-
         for (i in 8 until 23) {
             val textView = TextView(requireContext())
             textView.text = "${i}:00"
@@ -361,13 +449,19 @@ class ScheduleFragment : Fragment() {
                 val textViewTime = cardView.findViewById<TextView>(R.id.time)
                 textViewTime.text = "$startTimeFormatted - $endTimeFormatted"
 
-                val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
-                // textViewTeacher.text = event.
+                val teacher = event.teacher[0]
+                val lastName = teacher.lastName
+                val name = teacher.firstName[0]
+                val fatherName = teacher.middleName[0]
 
-                val cardColor = when (event.disciplineType?.name) {
-                    TDiscipline.LECTURE -> R.color.lecture_side_on
-                    TDiscipline.PRACTICE -> R.color.practice_side_on
-                    TDiscipline.LABORATORY -> R.color.lab_side_on
+                val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
+                textViewTeacher.text = lastName + " " + name + ". " + fatherName + "."
+
+
+                val cardColor = when (event.type?.name) {
+                    TDiscipline.LECTURE.toString() -> R.color.lecture_side_on
+                    TDiscipline.PRACTICE.toString() -> R.color.practice_side_on
+                    TDiscipline.LABORATORY.toString() -> R.color.lab_side_on
                     else -> R.color.other_side_on
                 }
                 cardView.setCardBackgroundColor(
@@ -379,10 +473,10 @@ class ScheduleFragment : Fragment() {
 
                 val textContainer = cardView.findViewById<LinearLayout>(R.id.text_container)
 
-                val linearColor = when (event.disciplineType?.name) {
-                    TDiscipline.LECTURE -> R.color.lecture_main
-                    TDiscipline.PRACTICE -> R.color.practice_main
-                    TDiscipline.LABORATORY -> R.color.lab_main
+                val linearColor = when (event.type?.name) {
+                    TDiscipline.LECTURE.toString() -> R.color.lecture_main
+                    TDiscipline.PRACTICE.toString() -> R.color.practice_main
+                    TDiscipline.LABORATORY.toString() -> R.color.lab_main
                     else -> R.color.other_main
                 }
                 textContainer.setBackgroundColor(
