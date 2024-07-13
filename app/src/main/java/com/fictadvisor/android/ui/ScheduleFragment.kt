@@ -89,22 +89,7 @@ class ScheduleFragment : Fragment() {
 
         // testScheduleApiMethods()
 
-        val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
-        CoroutineScope(Dispatchers.IO).launch {
-            scheduleViewModel.getEventsAuthorized(
-                token,
-                storageUtil.getOrdinaryStudentInfo()!!.group.id,
-                11,
-                false
-            )
-        }
-
-        scheduleViewModel.getEventsAuthorizedResponse
-            .observe(viewLifecycleOwner) { eventResponse ->
-                eventResponse?.let {
-                    handleScheduleResponse(eventResponse)
-                }
-            }
+        getWeekEvents()
 
         return view
     }
@@ -287,91 +272,6 @@ class ScheduleFragment : Fragment() {
         }
     }
 
-    // works but wrong
-
-    private var listOfEvents = mutableListOf<EventDTO>()
-
-    private fun handleScheduleResponse(response:  BaseResponse<GetEventResponse>) {
-        when (response) {
-            is BaseResponse.Success -> {
-                val events = response.data?.events ?: emptyList()
-                val week = response.data?.week
-
-                for (event in events) {
-                    var teachers: List<Teacher>
-                    var disciplineType: TDiscipline
-                    Log.d("yess", event.toString())
-
-                    val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
-                    CoroutineScope(Dispatchers.IO).launch {
-                        scheduleViewModel.getEventInfo(token, event.id, week!!.toInt())
-                        Log.d("yess", "3")
-                    }
-
-                    scheduleViewModel.getEventInfoResponse
-                        .observe(viewLifecycleOwner) { eventInfoResponse ->
-                            eventInfoResponse?.let {
-                                Log.d("yess", "4")
-                                handle(eventInfoResponse, event, week!!)
-                                Log.d("yess", event.toString())
-                            }
-                        }
-                }
-            }
-
-            is BaseResponse.Error -> {
-            }
-
-            is BaseResponse.Loading -> {
-            }
-        }
-    }
-
-    class EventInfo(
-        val name: String,
-        val teacher: List<Teacher>,
-        val startTime: String,
-        val endTime: String,
-        val type:  TDiscipline,
-    )
-
-    private fun handle(eventInfoResponse:  BaseResponse<DetailedEventResponse>, event: EventDTO, week: String) {
-        when (eventInfoResponse) {
-            is BaseResponse.Success -> {
-                Log.d("yess", "5")
-                Log.d("yess", eventInfoResponse.toString())
-
-                listOfEvents.add(event)
-                val teachers = eventInfoResponse.data?.teachers ?: emptyList()
-                val disciplineType = eventInfoResponse.data!!.eventType
-                val events = mutableListOf<EventInfo>()
-                if (getDate(event.startTime) == "2024-04-15") {
-                    Log.d("yess", event.toString())
-                    events.add(
-                        EventInfo(
-                            event.name,
-                            teachers,
-                            event.startTime,
-                            event.endTime,
-                            disciplineType
-                        )
-                    )
-                }
-                //Log.d("yess", events.toString())
-
-                drawUI(events, week)
-            }
-
-            is BaseResponse.Error -> {
-                Log.d("yess", "error")
-                Log.d("yess", eventInfoResponse.toString())
-            }
-
-            is BaseResponse.Loading -> {
-            }
-        }
-    }
-
     private fun getTime(string: String): String {
         val defaultTimezone = TimeZone.getDefault().id
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX", Locale.UK)
@@ -401,7 +301,7 @@ class ScheduleFragment : Fragment() {
         return newDate
     }
 
-    private fun drawUI(events: List<EventInfo>, week: String?) {
+    private fun drawUI(event: EventDTO, detailedEvent: DetailedEventResponse) {
         val timeColumn = binding.timeColumn
         for (i in 8 until 23) {
             val textView = TextView(requireContext())
@@ -425,92 +325,90 @@ class ScheduleFragment : Fragment() {
         }
 
         val scheduleLayout = binding.scheduleLayout
-        val chosenDate = "2024-04-15"
+        val chosenDate = "2024-04-17"
 
-        for (event in events) {
-            if (getDate(event.startTime) == chosenDate) {
+        if (getDate(event.startTime) == chosenDate) {
 
-                Log.d("ScheduleFragmentHey", "$event")
-                val cardView = layoutInflater.inflate(R.layout.card_view_template, null) as CardView
-                cardView.id = View.generateViewId()
+            Log.d("ScheduleFragmentHey", "$event")
+            val cardView = layoutInflater.inflate(R.layout.card_view_template, null) as CardView
+            cardView.id = View.generateViewId()
 
-                val startTimeFormatted = getTime(event.startTime)
-                val endTimeFormatted = getTime(event.endTime)
+            val startTimeFormatted = getTime(event.startTime)
+            val endTimeFormatted = getTime(event.endTime)
 
-                val layoutParams = ConstraintLayout.LayoutParams(
-                    ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                    dpToPx(calculateCardHeight(startTimeFormatted, endTimeFormatted))
-                )
-                cardView.layoutParams = layoutParams
+            val layoutParams = ConstraintLayout.LayoutParams(
+                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+                dpToPx(calculateCardHeight(startTimeFormatted, endTimeFormatted))
+            )
+            cardView.layoutParams = layoutParams
 
-                val textViewSubject = cardView.findViewById<TextView>(R.id.subject)
-                textViewSubject.text = event.name
+            val textViewSubject = cardView.findViewById<TextView>(R.id.subject)
+            textViewSubject.text = event.name
 
-                val textViewTime = cardView.findViewById<TextView>(R.id.time)
-                textViewTime.text = "$startTimeFormatted - $endTimeFormatted"
+            val textViewTime = cardView.findViewById<TextView>(R.id.time)
+            textViewTime.text = "$startTimeFormatted - $endTimeFormatted"
 
-                val teacher = event.teacher[0]
-                val lastName = teacher.lastName
-                val name = teacher.firstName[0]
-                val fatherName = teacher.middleName[0]
+            val teacher = detailedEvent.teachers[0]
+            val lastName = teacher.lastName
+            val name = teacher.firstName[0]
+            val fatherName = teacher.middleName[0]
 
-                val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
-                textViewTeacher.text = lastName + " " + name + ". " + fatherName + "."
+            val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
+            textViewTeacher.text = lastName + " " + name + ". " + fatherName + "."
 
 
-                val cardColor = when (event.type?.name) {
-                    TDiscipline.LECTURE.toString() -> R.color.lecture_side_on
-                    TDiscipline.PRACTICE.toString() -> R.color.practice_side_on
-                    TDiscipline.LABORATORY.toString() -> R.color.lab_side_on
-                    else -> R.color.other_side_on
-                }
-                cardView.setCardBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        cardColor
-                    )
-                )
-
-                val textContainer = cardView.findViewById<LinearLayout>(R.id.text_container)
-
-                val linearColor = when (event.type?.name) {
-                    TDiscipline.LECTURE.toString() -> R.color.lecture_main
-                    TDiscipline.PRACTICE.toString() -> R.color.practice_main
-                    TDiscipline.LABORATORY.toString() -> R.color.lab_main
-                    else -> R.color.other_main
-                }
-                textContainer.setBackgroundColor(
-                    ContextCompat.getColor(
-                        requireContext(),
-                        linearColor
-                    )
-                )
-
-                scheduleLayout.addView(cardView)
-
-                val constraints = ConstraintSet()
-                constraints.clone(scheduleLayout)
-
-                constraints.connect(
-                    cardView.id, ConstraintSet.START,
-                    timeColumn.id, ConstraintSet.END,
-                    10
-                )
-
-                constraints.connect(
-                    cardView.id, ConstraintSet.TOP,
-                    scheduleLayout.id, ConstraintSet.TOP,
-                    dpToPx(calculateStartPosition(startTimeFormatted))
-                )
-
-                constraints.connect(
-                    cardView.id, ConstraintSet.END,
-                    scheduleLayout.id, ConstraintSet.END,
-                    16
-                )
-
-                constraints.applyTo(scheduleLayout)
+            val cardColor = when (detailedEvent.eventType) {
+                TDiscipline.LECTURE -> R.color.lecture_side_on
+                TDiscipline.PRACTICE -> R.color.practice_side_on
+                TDiscipline.LABORATORY -> R.color.lab_side_on
+                else -> R.color.other_side_on
             }
+            cardView.setCardBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    cardColor
+                )
+            )
+
+            val textContainer = cardView.findViewById<LinearLayout>(R.id.text_container)
+
+            val linearColor = when (detailedEvent.eventType) {
+                TDiscipline.LECTURE -> R.color.lecture_main
+                TDiscipline.PRACTICE -> R.color.practice_main
+                TDiscipline.LABORATORY -> R.color.lab_main
+                else -> R.color.other_main
+            }
+            textContainer.setBackgroundColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    linearColor
+                )
+            )
+
+            scheduleLayout.addView(cardView)
+
+            val constraints = ConstraintSet()
+            constraints.clone(scheduleLayout)
+
+            constraints.connect(
+                cardView.id, ConstraintSet.START,
+                timeColumn.id, ConstraintSet.END,
+                10
+            )
+
+            constraints.connect(
+                cardView.id, ConstraintSet.TOP,
+                scheduleLayout.id, ConstraintSet.TOP,
+                dpToPx(calculateStartPosition(startTimeFormatted))
+            )
+
+            constraints.connect(
+                cardView.id, ConstraintSet.END,
+                scheduleLayout.id, ConstraintSet.END,
+                16
+            )
+
+            constraints.applyTo(scheduleLayout)
         }
     }
 
@@ -538,6 +436,88 @@ class ScheduleFragment : Fragment() {
 
         val totalStartMinutes = (startHour * 60 - 8 * 60 + startMinute) * 80 / 60
         return totalStartMinutes + fromLine
+    }
+
+    private fun getWeekEvents() {
+        val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
+        CoroutineScope(Dispatchers.IO).launch {
+            scheduleViewModel.getEventsAuthorized(
+                token,
+                storageUtil.getOrdinaryStudentInfo()!!.group.id,
+                11,
+                true
+            )
+        }
+
+        scheduleViewModel.getEventsAuthorizedResponse
+            .observe(viewLifecycleOwner) { eventResponse ->
+                eventResponse?.let {
+                    handleWeekEventsResponse(eventResponse)
+                }
+            }
+    }
+
+    private fun handleWeekEventsResponse(response: BaseResponse<GetEventResponse>) {
+        when (response) {
+            is BaseResponse.Success -> {
+                val events = response.data?.events ?: emptyList()
+                val chosenDate = "2024-04-17"
+
+                for (event in events) {
+                    // Log.d("yess", event.toString())
+                    if (chosenDate == getDate(event.startTime)) {
+                        Log.d("yess", event.toString())
+                        getDetailedEventInfo(event)
+                    }
+                }
+            }
+
+            is BaseResponse.Error -> {
+                Log.d("yess", response.toString())
+            }
+
+            is BaseResponse.Loading -> {
+
+            }
+        }
+    }
+
+    private fun getDetailedEventInfo(event: EventDTO) {
+        val token = "Bearer ${StorageUtil(requireContext()).getTokens()!!.accessToken}"
+        CoroutineScope(Dispatchers.IO).launch {
+            scheduleViewModel.getEventInfo(
+                token,
+                event.id,
+                11
+            )
+        }
+
+        scheduleViewModel.getEventInfoResponse
+            .observe(viewLifecycleOwner) { eventResponse ->
+                eventResponse?.let {
+                    handleDetailedEventInfoResponse(eventResponse, event)
+                }
+            }
+    }
+
+    private fun handleDetailedEventInfoResponse(response: BaseResponse<DetailedEventResponse>, event: EventDTO) {
+        when (response) {
+            is BaseResponse.Success -> {
+                val eventInfo = response.data
+                if (eventInfo != null) {
+                    drawUI(event, eventInfo)
+                }
+                // scheduleViewModel.getEventInfoResponse.removeObservers(viewLifecycleOwner)
+            }
+
+            is BaseResponse.Error -> {
+                Log.d("yess", response.toString())
+            }
+
+            is BaseResponse.Loading -> {
+
+            }
+        }
     }
 
     companion object {
