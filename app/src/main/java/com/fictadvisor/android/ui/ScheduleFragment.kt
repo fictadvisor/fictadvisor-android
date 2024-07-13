@@ -87,6 +87,10 @@ class ScheduleFragment : Fragment() {
             ScheduleViewModelFactory(scheduleRepository)
         ).get(ScheduleViewModel::class.java)
 
+        val currentDate = LocalDate.now()
+        binding.weekday.text = getDayOfWeek(currentDate.toString())
+        binding.helloUsername.text = "Hello, ${storageUtil.getOrdinaryStudentInfo()!!.username}!"
+
         // testScheduleApiMethods()
 
         drawTimeline()
@@ -520,6 +524,13 @@ class ScheduleFragment : Fragment() {
 
             }
         }
+    }
+
+    private fun getDayOfWeek(date: String): String {
+        val date = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+        val dayOfWeek = date.dayOfWeek
+        return dayOfWeek.getDisplayName(TextStyle.FULL, Locale("uk"))
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
     }
 
     companion object {
