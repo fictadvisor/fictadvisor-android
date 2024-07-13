@@ -89,6 +89,7 @@ class ScheduleFragment : Fragment() {
 
         // testScheduleApiMethods()
 
+        drawTimeline()
         getWeekEvents()
 
         return view
@@ -301,7 +302,95 @@ class ScheduleFragment : Fragment() {
         return newDate
     }
 
-    private fun drawUI(event: EventDTO, detailedEvent: DetailedEventResponse) {
+    private fun drawCard(event: EventDTO, detailedEvent: DetailedEventResponse) {
+        Log.d("yess", "inside draw card")
+        Log.d("yess", event.toString())
+        Log.d("yess", detailedEvent.toString())
+
+        val scheduleLayout = binding.scheduleLayout
+        val cardView = layoutInflater.inflate(R.layout.card_view_template, null) as CardView
+        cardView.id = View.generateViewId()
+
+        val startTimeFormatted = getTime(event.startTime)
+        val endTimeFormatted = getTime(event.endTime)
+
+        val layoutParams = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
+            dpToPx(calculateCardHeight(startTimeFormatted, endTimeFormatted))
+        )
+        cardView.layoutParams = layoutParams
+
+        val textViewSubject = cardView.findViewById<TextView>(R.id.subject)
+        textViewSubject.text = event.name
+
+        val textViewTime = cardView.findViewById<TextView>(R.id.time)
+        textViewTime.text = "$startTimeFormatted - $endTimeFormatted"
+
+        val teacher = detailedEvent.teachers[0]
+        val lastName = teacher.lastName
+        val name = teacher.firstName[0]
+        val fatherName = teacher.middleName[0]
+
+        val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
+        textViewTeacher.text = lastName + " " + name + ". " + fatherName + "."
+
+
+        val cardColor = when (detailedEvent.eventType) {
+            TDiscipline.LECTURE -> R.color.lecture_side_on
+            TDiscipline.PRACTICE -> R.color.practice_side_on
+            TDiscipline.LABORATORY -> R.color.lab_side_on
+            else -> R.color.other_side_on
+        }
+        cardView.setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                cardColor
+            )
+        )
+
+        val textContainer = cardView.findViewById<LinearLayout>(R.id.text_container)
+
+        val linearColor = when (detailedEvent.eventType) {
+            TDiscipline.LECTURE -> R.color.lecture_main
+            TDiscipline.PRACTICE -> R.color.practice_main
+            TDiscipline.LABORATORY -> R.color.lab_main
+            else -> R.color.other_main
+        }
+        textContainer.setBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                linearColor
+            )
+        )
+
+        scheduleLayout.addView(cardView)
+
+        val timeColumn = binding.timeColumn
+        val constraints = ConstraintSet()
+        constraints.clone(scheduleLayout)
+
+        constraints.connect(
+            cardView.id, ConstraintSet.START,
+            timeColumn.id, ConstraintSet.END,
+            10
+        )
+
+        constraints.connect(
+            cardView.id, ConstraintSet.TOP,
+            scheduleLayout.id, ConstraintSet.TOP,
+            dpToPx(calculateStartPosition(startTimeFormatted))
+        )
+
+        constraints.connect(
+            cardView.id, ConstraintSet.END,
+            scheduleLayout.id, ConstraintSet.END,
+            16
+        )
+
+        constraints.applyTo(scheduleLayout)
+    }
+
+    private fun drawTimeline() {
         val timeColumn = binding.timeColumn
         for (i in 8 until 23) {
             val textView = TextView(requireContext())
@@ -322,93 +411,6 @@ class ScheduleFragment : Fragment() {
             textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.grayText))
 
             timeColumn.addView(textView)
-        }
-
-        val scheduleLayout = binding.scheduleLayout
-        val chosenDate = "2024-04-17"
-
-        if (getDate(event.startTime) == chosenDate) {
-
-            Log.d("ScheduleFragmentHey", "$event")
-            val cardView = layoutInflater.inflate(R.layout.card_view_template, null) as CardView
-            cardView.id = View.generateViewId()
-
-            val startTimeFormatted = getTime(event.startTime)
-            val endTimeFormatted = getTime(event.endTime)
-
-            val layoutParams = ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                dpToPx(calculateCardHeight(startTimeFormatted, endTimeFormatted))
-            )
-            cardView.layoutParams = layoutParams
-
-            val textViewSubject = cardView.findViewById<TextView>(R.id.subject)
-            textViewSubject.text = event.name
-
-            val textViewTime = cardView.findViewById<TextView>(R.id.time)
-            textViewTime.text = "$startTimeFormatted - $endTimeFormatted"
-
-            val teacher = detailedEvent.teachers[0]
-            val lastName = teacher.lastName
-            val name = teacher.firstName[0]
-            val fatherName = teacher.middleName[0]
-
-            val textViewTeacher = cardView.findViewById<TextView>(R.id.teacher)
-            textViewTeacher.text = lastName + " " + name + ". " + fatherName + "."
-
-
-            val cardColor = when (detailedEvent.eventType) {
-                TDiscipline.LECTURE -> R.color.lecture_side_on
-                TDiscipline.PRACTICE -> R.color.practice_side_on
-                TDiscipline.LABORATORY -> R.color.lab_side_on
-                else -> R.color.other_side_on
-            }
-            cardView.setCardBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    cardColor
-                )
-            )
-
-            val textContainer = cardView.findViewById<LinearLayout>(R.id.text_container)
-
-            val linearColor = when (detailedEvent.eventType) {
-                TDiscipline.LECTURE -> R.color.lecture_main
-                TDiscipline.PRACTICE -> R.color.practice_main
-                TDiscipline.LABORATORY -> R.color.lab_main
-                else -> R.color.other_main
-            }
-            textContainer.setBackgroundColor(
-                ContextCompat.getColor(
-                    requireContext(),
-                    linearColor
-                )
-            )
-
-            scheduleLayout.addView(cardView)
-
-            val constraints = ConstraintSet()
-            constraints.clone(scheduleLayout)
-
-            constraints.connect(
-                cardView.id, ConstraintSet.START,
-                timeColumn.id, ConstraintSet.END,
-                10
-            )
-
-            constraints.connect(
-                cardView.id, ConstraintSet.TOP,
-                scheduleLayout.id, ConstraintSet.TOP,
-                dpToPx(calculateStartPosition(startTimeFormatted))
-            )
-
-            constraints.connect(
-                cardView.id, ConstraintSet.END,
-                scheduleLayout.id, ConstraintSet.END,
-                16
-            )
-
-            constraints.applyTo(scheduleLayout)
         }
     }
 
@@ -505,7 +507,7 @@ class ScheduleFragment : Fragment() {
             is BaseResponse.Success -> {
                 val eventInfo = response.data
                 if (eventInfo != null) {
-                    drawUI(event, eventInfo)
+                    drawCard(event, eventInfo)
                 }
                 // scheduleViewModel.getEventInfoResponse.removeObservers(viewLifecycleOwner)
             }
